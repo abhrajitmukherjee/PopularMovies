@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -76,8 +75,6 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), MovieDetailsActivity.class)
                         .putExtra(getString(R.string.intent_poster_path), mThumbIds.get(position)[0])
                         .putExtra(getString(R.string.intent_title),mThumbIds.get(position)[1])
@@ -157,7 +154,7 @@ public class MainActivityFragment extends Fragment {
             for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject results = movieArray.getJSONObject(i);
 
-                String posterPath = "http://image.tmdb.org/t/p/w185"+results.getString(POSTER);
+                String posterPath = getString(R.string.api_image_base_path)+results.getString(POSTER);
                 String title=results.getString(ORIGINAL_TITLE);
                 String overview=results.getString(OVERVIEW);
                 String voteAvg=results.getString(VOTES);

@@ -6,7 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -29,9 +32,9 @@ public class MovieDetailsFragment extends Fragment {
             String vote= intent.getStringExtra(getString(R.string.intent_vote_avg));
             String release= intent.getStringExtra(getString(R.string.intent_release_date));
 
+            Picasso.with(getActivity()).load(posterPath).into(((ImageView) rootView.findViewById(R.id.imagePoster)));
 
-            ((TextView) rootView.findViewById(R.id.textPosterPath))
-                    .setText(posterPath);
+
             ((TextView) rootView.findViewById(R.id.textTitle))
                     .setText(title);
             ((TextView) rootView.findViewById(R.id.textOverview))
