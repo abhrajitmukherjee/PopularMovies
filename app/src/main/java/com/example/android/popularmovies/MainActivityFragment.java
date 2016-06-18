@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,9 +14,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -37,7 +40,7 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
     private ImageAdapter mImageAdapter;
-    public ArrayList<String> mThumbIds;
+    public ArrayList<String[]> mThumbIds;
     private GridView gridview;
 
     public MainActivityFragment() {
@@ -62,9 +65,30 @@ public class MainActivityFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.v("Initiate","Starts here-------------------");
+        updateMovieThumbs(getString(R.string.base_uri_popular));
         gridview = (GridView) getActivity().findViewById(R.id.gridview);
         mImageAdapter = new ImageAdapter(getActivity());
         gridview.setAdapter(mImageAdapter);
+        updateMovieThumbs(getString(R.string.base_uri_popular));
+
+
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+                Toast.makeText(getActivity(), "" + position,
+                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), MovieDetailsActivity.class)
+                        .putExtra(getString(R.string.intent_poster_path), mThumbIds.get(position)[0])
+                        .putExtra(getString(R.string.intent_title),mThumbIds.get(position)[1])
+                        .putExtra(getString(R.string.intent_overview),mThumbIds.get(position)[2])
+                        .putExtra(getString(R.string.intent_vote_avg),mThumbIds.get(position)[3])
+                        .putExtra(getString(R.string.intent_release_date),mThumbIds.get(position)[4]);
+
+
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -91,7 +115,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        mThumbIds = new ArrayList<String>();
+        mThumbIds = new ArrayList<String[]>();
 
         return v;
     }
@@ -99,8 +123,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateMovieThumbs(getString(R.string.base_uri_popular));
-        updateMovieThumbs(getString(R.string.base_uri_popular));
 
     }
 
@@ -114,25 +136,36 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-    public class FetchMovieDatabase extends AsyncTask<String, Void, ArrayList<String>> {
+    public class FetchMovieDatabase extends AsyncTask<String, Void, ArrayList<String[]>> {
 
         private final String LOG_TAG = FetchMovieDatabase.class.getSimpleName();
 
 
-        private ArrayList<String> getMovieDataJson(String movieJsonStr)
+        private ArrayList<String[]> getMovieDataJson(String movieJsonStr)
                 throws JSONException {
 
             final String RESULTS = "results";
-            ArrayList<String> newThumbids=new ArrayList<String>();
+            final String ORIGINAL_TITLE="original_title";
+            final String POSTER="poster_path";
+            final String OVERVIEW="overview";
+            final String VOTES="vote_average";
+            final String RELEASE="release_date";
+            ArrayList<String[]> newThumbids=new ArrayList<String[]>();
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(RESULTS);
             for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject results = movieArray.getJSONObject(i);
-                String posterPath = "http://image.tmdb.org/t/p/w185"+results.getString("poster_path");
+
+                String posterPath = "http://image.tmdb.org/t/p/w185"+results.getString(POSTER);
+                String title=results.getString(ORIGINAL_TITLE);
+                String overview=results.getString(OVERVIEW);
+                String voteAvg=results.getString(VOTES);
+                String releaseDate=results.getString(RELEASE);
+                String[] outputAttr={posterPath,title,overview,voteAvg,releaseDate};
                 Log.v(LOG_TAG, posterPath);
 
-                newThumbids.add(posterPath);
+                newThumbids.add(outputAttr);
                 Log.v(LOG_TAG, Integer.toString(newThumbids.size()));
 
             }
@@ -142,7 +175,7 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected ArrayList<String> doInBackground(String... params) {
+        protected ArrayList<String[]> doInBackground(String... params) {
 
             if (params.length == 0) {
                 return null;
@@ -158,6 +191,8 @@ public class MainActivityFragment extends Fragment {
                 final String BASE_URL = params[0];
 
                 final String API_KEY = "api_key";
+
+
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_API_KEY)
@@ -217,11 +252,13 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> result) {
+        protected void onPostExecute(ArrayList<String[]> result) {
             if (result != null) {
+                if (mThumbIds.size()>0){
+                    mThumbIds.clear();
+                }
 
-                mThumbIds.clear();
-                mThumbIds = (ArrayList<String>) result.clone();
+                mThumbIds = (ArrayList<String[]>) result.clone();
                 Log.v(LOG_TAG, "Postexecute count:"+Integer.toString( mThumbIds.size()));
                 mImageAdapter.notifyDataSetChanged();
 
@@ -266,7 +303,7 @@ public class MainActivityFragment extends Fragment {
                 imageView = (ImageView) convertView;
             }
 
-            Picasso.with(getActivity()).load(mThumbIds.get(position)).into(imageView);
+            Picasso.with(getActivity()).load(mThumbIds.get(position)[0]).into(imageView);
             return imageView;
         }
 
