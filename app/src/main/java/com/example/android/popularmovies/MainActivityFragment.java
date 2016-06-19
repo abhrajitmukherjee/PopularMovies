@@ -2,6 +2,8 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -36,17 +39,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MainActivityFragment extends Fragment {
 
-    private ImageAdapter mImageAdapter;
     public ArrayList<String[]> mThumbIds;
+    boolean recallFlag = true;
+    String sortType;
+    private ImageAdapter mImageAdapter;
     private GridView gridview;
     private int id;
-    boolean recallFlag=true;
-    String sortType;
 
     public MainActivityFragment() {
 
@@ -64,13 +64,13 @@ public class MainActivityFragment extends Fragment {
 
         if (savedInstanceState != null) {
             sortType = savedInstanceState.getString("SORT_TYPE");
-            recallFlag=false;
+            recallFlag = false;
         } else {
             sortType = getString(R.string.base_uri_popular);
-            recallFlag=true;
+            recallFlag = true;
         }
 
-        Log.v("Create","On create called-----------------"+sortType+" "+recallFlag);
+        Log.v("Create", "On create called-----------------" + sortType + " " + recallFlag);
         setHasOptionsMenu(true);
 
     }
@@ -88,11 +88,10 @@ public class MainActivityFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         int selection;
-        if (sortType.equals(getString(R.string.base_uri_toprated))){
-            selection=1;
-        }
-        else{
-            selection=0;
+        if (sortType.equals(getString(R.string.base_uri_toprated))) {
+            selection = 1;
+        } else {
+            selection = 0;
         }
 
         spinner.setSelection(selection);
@@ -101,11 +100,10 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
-                if (position==0){
-                    sortType=getString(R.string.base_uri_popular);
-                }
-                else{
-                    sortType=getString(R.string.base_uri_toprated);
+                if (position == 0) {
+                    sortType = getString(R.string.base_uri_popular);
+                } else {
+                    sortType = getString(R.string.base_uri_toprated);
                 }
                 updateMovieThumbs(sortType);
                 gridview.setSelection(0);
@@ -117,9 +115,6 @@ public class MainActivityFragment extends Fragment {
             }
         });
         spinner.setPopupBackgroundResource(R.color.colorAccent);
-
-
-
 
 
     }
@@ -165,7 +160,7 @@ public class MainActivityFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (recallFlag){
+        if (recallFlag) {
             updateMovieThumbs(sortType);
             Log.v("Start", "------------------_START CALLLED-------------------");
         }
@@ -189,13 +184,33 @@ public class MainActivityFragment extends Fragment {
 
 
     private void updateMovieThumbs(String sortType) {
-        FetchMovieDatabase movieTask = new FetchMovieDatabase();
-        movieTask.execute(sortType);
-        Log.v("getCount", "Get Main count=" + Integer.toString(mThumbIds.size()));
+
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        if (isConnected) {
+
+            FetchMovieDatabase movieTask = new FetchMovieDatabase();
+            movieTask.execute(sortType);
+            Log.v("getCount", "Get Main count=" + Integer.toString(mThumbIds.size()));
+
+        } else {
+            gridview.setAdapter(null);
+            Toast.makeText(getActivity(), "No Internet Connection!!",
+                    Toast.LENGTH_SHORT).show();
+
+        }
 
 
     }
 
+    private static class ViewHolder {
+        ImageView imageView;
+    }
 
     public class FetchMovieDatabase extends AsyncTask<String, Void, ArrayList<String[]>> {
 
@@ -324,18 +339,15 @@ public class MainActivityFragment extends Fragment {
 
                 mThumbIds = (ArrayList<String[]>) result.clone();
                 Log.v(LOG_TAG, "Postexecute count:" + Integer.toString(mThumbIds.size()));
-                gridview.invalidate();
+                if (gridview.getAdapter() == null) {
+                    gridview.setAdapter(mImageAdapter);
+                }
                 mImageAdapter.notifyDataSetChanged();
 
 
             }
         }
     }
-
-    private static class ViewHolder {
-        ImageView imageView;
-    }
-
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
