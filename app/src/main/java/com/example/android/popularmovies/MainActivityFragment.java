@@ -56,9 +56,9 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Add this line in order for this fragment to handle menu events.
 
         mThumbIds = new ArrayList<>();
+        //Initialized with dummy values to prevent on load freeze
         String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "2", "3", "4", "5"};
         mThumbIds.add(arr);
 
@@ -70,7 +70,6 @@ public class MainActivityFragment extends Fragment {
             recallFlag = true;
         }
 
-        Log.v("Create", "On create called-----------------" + sortType + " " + recallFlag);
         setHasOptionsMenu(true);
 
     }
@@ -122,7 +121,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v("Initiate", "Starts here-------------------");
 
         gridview = (GridView) getActivity().findViewById(R.id.gridview);
         mImageAdapter = new ImageAdapter(getActivity());
@@ -162,7 +160,6 @@ public class MainActivityFragment extends Fragment {
 
         if (recallFlag) {
             updateMovieThumbs(sortType);
-            Log.v("Start", "------------------_START CALLLED-------------------");
         }
 
 
@@ -196,7 +193,6 @@ public class MainActivityFragment extends Fragment {
 
             FetchMovieDatabase movieTask = new FetchMovieDatabase();
             movieTask.execute(sortType);
-            Log.v("getCount", "Get Main count=" + Integer.toString(mThumbIds.size()));
 
         } else {
             gridview.setAdapter(null);
@@ -239,10 +235,8 @@ public class MainActivityFragment extends Fragment {
                 String voteAvg = results.getString(VOTES);
                 String releaseDate = results.getString(RELEASE);
                 String[] outputAttr = {posterPath, title, overview, voteAvg, releaseDate};
-                Log.v(LOG_TAG, posterPath);
 
                 newThumbids.add(outputAttr);
-                Log.v(LOG_TAG, Integer.toString(newThumbids.size()));
 
             }
             return newThumbids;
@@ -255,7 +249,6 @@ public class MainActivityFragment extends Fragment {
 
             if (params.length == 0) {
 
-                Log.v(LOG_TAG, "NULLL RETURNED------------------" + params[0]);
                 return null;
             }
             HttpURLConnection urlConnection = null;
@@ -267,10 +260,7 @@ public class MainActivityFragment extends Fragment {
             try {
 
                 final String BASE_URL = params[0];
-
                 final String API_KEY = "api_key";
-
-                Log.v(LOG_TAG, "param" + params[0]);
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_API_KEY)
@@ -338,7 +328,6 @@ public class MainActivityFragment extends Fragment {
                 }
 
                 mThumbIds = (ArrayList<String[]>) result.clone();
-                Log.v(LOG_TAG, "Postexecute count:" + Integer.toString(mThumbIds.size()));
                 if (gridview.getAdapter() == null) {
                     gridview.setAdapter(mImageAdapter);
                 }
@@ -358,8 +347,6 @@ public class MainActivityFragment extends Fragment {
 
         public int getCount() {
 
-            Log.v("getCount", "Get Count=" + Integer.toString(mThumbIds.size()));
-            // return 5;
             return mThumbIds.size();
 
         }

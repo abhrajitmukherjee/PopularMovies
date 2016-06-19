@@ -3,70 +3,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.android.popularmovies.MovieDetailsFragment"
-    >
+    tools:context="com.example.android.popularmovies.MovieDetailsFragment">
 
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:textColor="@android:color/white"
-        android:textSize="34sp"
-        android:textStyle="bold"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        />
+        android:textColor="@android:color/white"
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
->
-
-
-        <ImageView
-            android:id="@+id/imagePoster"
-            android:layout_width="wrap_content"
-            android:layout_height="350dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitStart"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin"/>
+            android:paddingTop="@dimen/activity_vertical_margin">
 
 
-        <TextView
-            android:id="@+id/textOverview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/imagePoster"/>
+            <ImageView
+                android:id="@+id/imagePoster"
+                android:layout_width="wrap_content"
+                android:layout_height="350dp"
+                android:adjustViewBounds="true"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:scaleType="fitStart" />
 
-        <TextView
-            android:id="@+id/textVote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:layout_toRightOf="@id/imagePoster"
-            android:textSize="34sp"
-            />
 
-        <TextView
-            android:id="@+id/textRelease"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textVote"
-            android:layout_toRightOf="@id/imagePoster"/>
+            <TextView
+                android:id="@+id/textOverview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imagePoster" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/textVote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/imagePoster"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textRelease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textVote"
+                android:layout_toRightOf="@id/imagePoster" />
+
+        </RelativeLayout>
     </ScrollView>
 </LinearLayout>

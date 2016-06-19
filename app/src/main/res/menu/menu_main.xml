@@ -1,16 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.android.popularmovies.MainActivity">
 
 
-    <item android:id="@+id/action_about"
-        android:showAsAction="ifRoom|collapseActionView"
+    <item
+        android:id="@+id/action_about"
         android:icon="@android:drawable/ic_dialog_info"
-        android:title="About"
-        />
-
-
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="About" />
 
 
 </menu>

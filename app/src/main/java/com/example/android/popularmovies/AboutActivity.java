@@ -13,7 +13,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        ImageView iv=(ImageView)findViewById(R.id.image_attribution);
+        ImageView iv = (ImageView) findViewById(R.id.image_attribution);
         Picasso.
                 with(this).
                 load("https://assets.tmdb.org/images/logos/var_7_0_tmdb-logo-2_Antitled.png").

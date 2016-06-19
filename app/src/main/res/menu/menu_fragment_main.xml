@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
-    <item android:id="@+id/spinner"
-        app:showAsAction="ifRoom"
-        app:actionViewClass="android.widget.Spinner" />
+    <item
+        android:id="@+id/spinner"
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="ifRoom" />
 
 
 </menu>

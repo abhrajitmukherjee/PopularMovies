@@ -28,10 +28,10 @@ public class MovieDetailsFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(getString(R.string.intent_poster_path))) {
             String posterPath = intent.getStringExtra(getString(R.string.intent_poster_path));
-            String title= intent.getStringExtra(getString(R.string.intent_title));
-            String overview= intent.getStringExtra(getString(R.string.intent_overview));
-            String vote= intent.getStringExtra(getString(R.string.intent_vote_avg));
-            String release= intent.getStringExtra(getString(R.string.intent_release_date));
+            String title = intent.getStringExtra(getString(R.string.intent_title));
+            String overview = intent.getStringExtra(getString(R.string.intent_overview));
+            String vote = intent.getStringExtra(getString(R.string.intent_vote_avg));
+            String release = intent.getStringExtra(getString(R.string.intent_release_date));
 
             Picasso.with(getActivity()).load(posterPath).into(((ImageView) rootView.findViewById(R.id.imagePoster)));
 
@@ -44,8 +44,6 @@ public class MovieDetailsFragment extends Fragment {
                     .setText(vote);
             ((TextView) rootView.findViewById(R.id.textRelease))
                     .setText(release);
-
-
 
 
         }
