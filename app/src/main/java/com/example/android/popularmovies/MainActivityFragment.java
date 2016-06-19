@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,9 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +45,9 @@ public class MainActivityFragment extends Fragment {
     public ArrayList<String[]> mThumbIds;
     private GridView gridview;
     private int id;
+    boolean recallFlag=true;
     String sortType;
+
     public MainActivityFragment() {
 
 
@@ -52,17 +57,20 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
-        mThumbIds=new ArrayList<>();
-        String[] arr={"https://s5.postimg.org/b3evudzxz/blank.png","2","3","4","5"};
+
+        mThumbIds = new ArrayList<>();
+        String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "2", "3", "4", "5"};
         mThumbIds.add(arr);
-        if (savedInstanceState!=null){
-            sortType=savedInstanceState.getString("SORT_TYPE");
-        }
-        else{
-            sortType=getString(R.string.base_uri_popular);
-            id=R.string.action_popular;
+
+        if (savedInstanceState != null) {
+            sortType = savedInstanceState.getString("SORT_TYPE");
+            recallFlag=false;
+        } else {
+            sortType = getString(R.string.base_uri_popular);
+            recallFlag=true;
         }
 
+        Log.v("Create","On create called-----------------"+sortType+" "+recallFlag);
         setHasOptionsMenu(true);
 
     }
@@ -70,12 +78,56 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_main, menu);
+
+        MenuItem item = menu.findItem(R.id.spinner);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.sort_array, R.layout.spinner_layout);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        int selection;
+        if (sortType.equals(getString(R.string.base_uri_toprated))){
+            selection=1;
+        }
+        else{
+            selection=0;
+        }
+
+        spinner.setSelection(selection);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code here
+                if (position==0){
+                    sortType=getString(R.string.base_uri_popular);
+                }
+                else{
+                    sortType=getString(R.string.base_uri_toprated);
+                }
+                updateMovieThumbs(sortType);
+                gridview.setSelection(0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        spinner.setPopupBackgroundResource(R.color.colorAccent);
+
+
+
+
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v("Initiate","Starts here-------------------");
+        Log.v("Initiate", "Starts here-------------------");
 
         gridview = (GridView) getActivity().findViewById(R.id.gridview);
         mImageAdapter = new ImageAdapter(getActivity());
@@ -87,17 +139,18 @@ public class MainActivityFragment extends Fragment {
                                     int position, long id) {
                 Intent intent = new Intent(getActivity(), MovieDetailsActivity.class)
                         .putExtra(getString(R.string.intent_poster_path), mThumbIds.get(position)[0])
-                        .putExtra(getString(R.string.intent_title),mThumbIds.get(position)[1])
-                        .putExtra(getString(R.string.intent_overview),mThumbIds.get(position)[2])
-                        .putExtra(getString(R.string.intent_vote_avg),mThumbIds.get(position)[3])
-                        .putExtra(getString(R.string.intent_release_date),mThumbIds.get(position)[4]);
+                        .putExtra(getString(R.string.intent_title), mThumbIds.get(position)[1])
+                        .putExtra(getString(R.string.intent_overview), mThumbIds.get(position)[2])
+                        .putExtra(getString(R.string.intent_vote_avg), mThumbIds.get(position)[3])
+                        .putExtra(getString(R.string.intent_release_date), mThumbIds.get(position)[4]);
 
 
                 startActivity(intent);
             }
         });
-    }
 
+
+    }
 
 
     @Override
@@ -111,40 +164,24 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.v("Start","------------------_START CALLLED-------------------");
-        updateMovieThumbs(sortType);
+
+        if (recallFlag){
+            updateMovieThumbs(sortType);
+            Log.v("Start", "------------------_START CALLLED-------------------");
+        }
+
 
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        if (id==R.id.action_popular){
-            savedInstanceState.putString("SORT_TYPE", getString(R.string.base_uri_popular));
-
-        }
-        else{
-            savedInstanceState.putString("SORT_TYPE", getString(R.string.base_uri_toprated));
-        }
-
+        savedInstanceState.putString("SORT_TYPE", sortType);
         super.onSaveInstanceState(savedInstanceState);
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        id = item.getItemId();
-
-        if (id == R.id.action_toprated) {
-            sortType=getString(R.string.base_uri_toprated);
-        } else if (id == R.id.action_popular) {
-            sortType=getString(R.string.base_uri_popular);
-        }
-
-        updateMovieThumbs(sortType);
 
 
         return true;
@@ -169,24 +206,24 @@ public class MainActivityFragment extends Fragment {
                 throws JSONException {
 
             final String RESULTS = "results";
-            final String ORIGINAL_TITLE="original_title";
-            final String POSTER="poster_path";
-            final String OVERVIEW="overview";
-            final String VOTES="vote_average";
-            final String RELEASE="release_date";
-            ArrayList<String[]> newThumbids=new ArrayList<String[]>();
+            final String ORIGINAL_TITLE = "original_title";
+            final String POSTER = "poster_path";
+            final String OVERVIEW = "overview";
+            final String VOTES = "vote_average";
+            final String RELEASE = "release_date";
+            ArrayList<String[]> newThumbids = new ArrayList<String[]>();
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(RESULTS);
             for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject results = movieArray.getJSONObject(i);
 
-                String posterPath = getString(R.string.api_image_base_path)+results.getString(POSTER);
-                String title=results.getString(ORIGINAL_TITLE);
-                String overview=results.getString(OVERVIEW);
-                String voteAvg=results.getString(VOTES);
-                String releaseDate=results.getString(RELEASE);
-                String[] outputAttr={posterPath,title,overview,voteAvg,releaseDate};
+                String posterPath = getString(R.string.api_image_base_path) + results.getString(POSTER);
+                String title = results.getString(ORIGINAL_TITLE);
+                String overview = results.getString(OVERVIEW);
+                String voteAvg = results.getString(VOTES);
+                String releaseDate = results.getString(RELEASE);
+                String[] outputAttr = {posterPath, title, overview, voteAvg, releaseDate};
                 Log.v(LOG_TAG, posterPath);
 
                 newThumbids.add(outputAttr);
@@ -203,7 +240,7 @@ public class MainActivityFragment extends Fragment {
 
             if (params.length == 0) {
 
-                Log.v(LOG_TAG,"NULLL RETURNED------------------"+params[0]);
+                Log.v(LOG_TAG, "NULLL RETURNED------------------" + params[0]);
                 return null;
             }
             HttpURLConnection urlConnection = null;
@@ -218,7 +255,7 @@ public class MainActivityFragment extends Fragment {
 
                 final String API_KEY = "api_key";
 
-                Log.v(LOG_TAG,"param"+params[0]);
+                Log.v(LOG_TAG, "param" + params[0]);
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_API_KEY)
@@ -278,16 +315,15 @@ public class MainActivityFragment extends Fragment {
         }
 
 
-
         @Override
         protected void onPostExecute(ArrayList<String[]> result) {
             if (result != null) {
-                if (mThumbIds.size()>0){
+                if (mThumbIds.size() > 0) {
                     mThumbIds.clear();
                 }
 
                 mThumbIds = (ArrayList<String[]>) result.clone();
-                Log.v(LOG_TAG, "Postexecute count:"+Integer.toString( mThumbIds.size()));
+                Log.v(LOG_TAG, "Postexecute count:" + Integer.toString(mThumbIds.size()));
                 gridview.invalidate();
                 mImageAdapter.notifyDataSetChanged();
 
@@ -295,6 +331,7 @@ public class MainActivityFragment extends Fragment {
             }
         }
     }
+
     private static class ViewHolder {
         ImageView imageView;
     }
@@ -310,7 +347,7 @@ public class MainActivityFragment extends Fragment {
         public int getCount() {
 
             Log.v("getCount", "Get Count=" + Integer.toString(mThumbIds.size()));
-           // return 5;
+            // return 5;
             return mThumbIds.size();
 
         }
@@ -324,7 +361,6 @@ public class MainActivityFragment extends Fragment {
         }
 
 
-
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
@@ -336,15 +372,13 @@ public class MainActivityFragment extends Fragment {
                 viewHolder.imageView = new ImageView(mContext);
                 viewHolder.imageView.setAdjustViewBounds(true);
                 viewHolder.imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                convertView= viewHolder.imageView;
+                convertView = viewHolder.imageView;
                 convertView.setTag(viewHolder);
-
 
 
             }
 
-            viewHolder = (ViewHolder)convertView.getTag();
-
+            viewHolder = (ViewHolder) convertView.getTag();
 
 
             Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(viewHolder.imageView);

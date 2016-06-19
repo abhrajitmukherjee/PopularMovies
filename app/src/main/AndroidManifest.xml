@@ -5,20 +5,18 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Used to adjust the work load depending on the type of network the device is using. -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
-            >
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,11 +26,17 @@
         <activity
             android:name=".MovieDetailsActivity"
             android:label="@string/title_activity_movie_details"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.popularmovies.MainActivity" />
+        </activity>
+        <activity android:name=".AboutActivity"
+            android:label="@string/title_about_activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.popularmovies.MainActivity" />
+
         </activity>
     </application>
 

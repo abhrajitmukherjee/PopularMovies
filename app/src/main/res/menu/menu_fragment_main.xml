@@ -2,16 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_popular"
-        android:orderInCategory="100"
-        android:title="@string/action_popular"
-        app:showAsAction="never" />
 
-    <item
-        android:id="@+id/action_toprated"
-        android:orderInCategory="100"
-        android:title="@string/action_toprated"
-        app:showAsAction="never" />
+
+    <item android:id="@+id/spinner"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.widget.Spinner" />
+
 
 </menu>

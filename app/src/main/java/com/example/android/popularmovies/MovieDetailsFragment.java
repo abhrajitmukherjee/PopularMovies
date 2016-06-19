@@ -46,7 +46,11 @@ public class MovieDetailsFragment extends Fragment {
                     .setText(release);
 
 
+
+
         }
         return rootView;
     }
+
+
 }
