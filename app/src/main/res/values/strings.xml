@@ -8,7 +8,7 @@
 
     <string name="base_uri_popular" translatable="false">https://api.themoviedb.org/3/movie/popular</string>
     <string name="base_uri_toprated" translatable="false">https://api.themoviedb.org/3/movie/top_rated</string>
-    <string name="api_image_base_path" translatable="false">http://image.tmdb.org/t/p/w500</string>
+    <string name="api_image_base_path" translatable="false">http://image.tmdb.org/t/p/w342</string>
 
     <string name="intent_poster_path" translatable="false">posterPath</string>
     <string name="intent_title" translatable="false">title</string>

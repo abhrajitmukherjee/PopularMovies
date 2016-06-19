@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.main_container, new MainActivityFragment())
                     .commit();
         }
-        //        ImageView iv=(ImageView)findViewById(R.id.test_image);
-//        Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(iv);
     }
 
     @Override

@@ -41,8 +41,10 @@ public class MainActivityFragment extends Fragment {
     private ImageAdapter mImageAdapter;
     public ArrayList<String[]> mThumbIds;
     private GridView gridview;
-
+    private int id;
+    String sortType;
     public MainActivityFragment() {
+
 
     }
 
@@ -50,6 +52,16 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
+        mThumbIds=new ArrayList<>();
+        String[] arr={"https://s5.postimg.org/b3evudzxz/blank.png","2","3","4","5"};
+        mThumbIds.add(arr);
+        if (savedInstanceState!=null){
+            sortType=savedInstanceState.getString("SORT_TYPE");
+        }
+        else{
+            sortType=getString(R.string.base_uri_popular);
+            id=R.string.action_popular;
+        }
 
         setHasOptionsMenu(true);
 
@@ -64,12 +76,10 @@ public class MainActivityFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.v("Initiate","Starts here-------------------");
-        updateMovieThumbs(getString(R.string.base_uri_popular));
+
         gridview = (GridView) getActivity().findViewById(R.id.gridview);
         mImageAdapter = new ImageAdapter(getActivity());
         gridview.setAdapter(mImageAdapter);
-        updateMovieThumbs(getString(R.string.base_uri_popular));
-
 
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,31 +98,12 @@ public class MainActivityFragment extends Fragment {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        if (id == R.id.action_toprated) {
-            updateMovieThumbs(getString(R.string.base_uri_toprated));
-
-
-        } else if (id == R.id.action_popular) {
-            updateMovieThumbs(getString(R.string.base_uri_popular));
-        }
-
-
-
-        return true;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        mThumbIds = new ArrayList<String[]>();
 
         return v;
     }
@@ -120,7 +111,43 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.v("Start","------------------_START CALLLED-------------------");
+        updateMovieThumbs(sortType);
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if (id==R.id.action_popular){
+            savedInstanceState.putString("SORT_TYPE", getString(R.string.base_uri_popular));
+
+        }
+        else{
+            savedInstanceState.putString("SORT_TYPE", getString(R.string.base_uri_toprated));
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        id = item.getItemId();
+
+        if (id == R.id.action_toprated) {
+            sortType=getString(R.string.base_uri_toprated);
+        } else if (id == R.id.action_popular) {
+            sortType=getString(R.string.base_uri_popular);
+        }
+
+        updateMovieThumbs(sortType);
+
+
+        return true;
     }
 
 
@@ -175,6 +202,8 @@ public class MainActivityFragment extends Fragment {
         protected ArrayList<String[]> doInBackground(String... params) {
 
             if (params.length == 0) {
+
+                Log.v(LOG_TAG,"NULLL RETURNED------------------"+params[0]);
                 return null;
             }
             HttpURLConnection urlConnection = null;
@@ -189,7 +218,7 @@ public class MainActivityFragment extends Fragment {
 
                 final String API_KEY = "api_key";
 
-
+                Log.v(LOG_TAG,"param"+params[0]);
 
                 Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY, BuildConfig.MOVIES_API_KEY)
@@ -248,6 +277,8 @@ public class MainActivityFragment extends Fragment {
             return null;
         }
 
+
+
         @Override
         protected void onPostExecute(ArrayList<String[]> result) {
             if (result != null) {
@@ -257,10 +288,15 @@ public class MainActivityFragment extends Fragment {
 
                 mThumbIds = (ArrayList<String[]>) result.clone();
                 Log.v(LOG_TAG, "Postexecute count:"+Integer.toString( mThumbIds.size()));
+                gridview.invalidate();
                 mImageAdapter.notifyDataSetChanged();
+
 
             }
         }
+    }
+    private static class ViewHolder {
+        ImageView imageView;
     }
 
 
@@ -287,23 +323,33 @@ public class MainActivityFragment extends Fragment {
             return 0;
         }
 
+
+
         // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
+            ViewHolder viewHolder;
+
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
-                imageView = new ImageView(mContext);
-                imageView.setAdjustViewBounds(true);
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                viewHolder = new ViewHolder();
 
-            } else {
-                imageView = (ImageView) convertView;
+                viewHolder.imageView = new ImageView(mContext);
+                viewHolder.imageView.setAdjustViewBounds(true);
+                viewHolder.imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                convertView= viewHolder.imageView;
+                convertView.setTag(viewHolder);
+
+
+
             }
 
-            Picasso.with(getActivity()).load(mThumbIds.get(position)[0]).into(imageView);
-            return imageView;
-        }
+            viewHolder = (ViewHolder)convertView.getTag();
 
+
+
+            Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(viewHolder.imageView);
+            return convertView;
+        }
     }
 
 
