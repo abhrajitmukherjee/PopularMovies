@@ -23,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -95,15 +96,23 @@ public class MainActivityFragment extends Fragment {
 
         spinner.setSelection(selection);
 
+
+
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // your code here
+                String headerText;
                 if (position == 0) {
                     sortType = getString(R.string.base_uri_popular);
+                    headerText=getString(R.string.popularHeader);
                 } else {
                     sortType = getString(R.string.base_uri_toprated);
+                    headerText=getString(R.string.topHeader);
                 }
+                TextView mainHeader=(TextView) getActivity().findViewById(R.id.mainHeader);
+                mainHeader.setText(headerText);
                 updateMovieThumbs(sortType);
                 gridview.setSelection(0);
             }
@@ -204,9 +213,6 @@ public class MainActivityFragment extends Fragment {
 
     }
 
-    private static class ViewHolder {
-        ImageView imageView;
-    }
 
     public class FetchMovieDatabase extends AsyncTask<String, Void, ArrayList<String[]>> {
 
@@ -340,6 +346,7 @@ public class MainActivityFragment extends Fragment {
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
+        private LayoutInflater inflater;
 
         public ImageAdapter(Context c) {
             mContext = c;
@@ -360,29 +367,32 @@ public class MainActivityFragment extends Fragment {
         }
 
 
-        // create a new ImageView for each item referenced by the Adapter
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder;
+            if (inflater==null)
+                inflater= (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            if (convertView == null) {
-                // if it's not recycled, initialize some attributes
-                viewHolder = new ViewHolder();
-
-                viewHolder.imageView = new ImageView(mContext);
-                viewHolder.imageView.setAdjustViewBounds(true);
-                viewHolder.imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                convertView = viewHolder.imageView;
-                convertView.setTag(viewHolder);
+            if (convertView == null)
+                convertView = inflater.inflate(R.layout.card_layout, null);
 
 
-            }
 
-            viewHolder = (ViewHolder) convertView.getTag();
+            ImageView iv=(ImageView) convertView.findViewById(R.id.cardImagePoster);
+
+            TextView titleText=(TextView) convertView.findViewById(R.id.cardMovieTitle);
+            titleText.setText(mThumbIds.get(position)[1].trim());
+
+            TextView releaseDate=(TextView) convertView.findViewById(R.id.cardMovieDate);
+            releaseDate.setText(mThumbIds.get(position)[4].trim());
+
+            TextView voteAvg=(TextView) convertView.findViewById(R.id.cardMovieRating);
+            voteAvg.setText(mThumbIds.get(position)[3].trim());
 
 
-            Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(viewHolder.imageView);
+
+            Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(iv);
             return convertView;
         }
+
     }
 
 

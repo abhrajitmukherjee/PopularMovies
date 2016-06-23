@@ -17,9 +17,13 @@
     <string name="intent_vote_avg" translatable="false">voteAvg</string>
     <string name="intent_release_date" translatable="false">releaseDate</string>
 
+    <string name="topHeader">Top Rated Movies</string>
+    <string name="popularHeader">Most Popular Movies</string>
+
     <string-array name="sort_array">
         <item>Most Popular</item>
         <item>Top Rated</item>
     </string-array>
 
 </resources>
+
