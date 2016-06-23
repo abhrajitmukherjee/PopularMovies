@@ -43,6 +43,7 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
     public ArrayList<String[]> mThumbIds;
+    public ArrayList<String> mFavorites;
     boolean recallFlag = true;
     String sortType;
     private ImageAdapter mImageAdapter;
@@ -59,8 +60,9 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mThumbIds = new ArrayList<>();
+        mFavorites=new ArrayList<>();
         //Initialized with dummy values to prevent on load freeze
-        String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "2", "3", "4", "5"};
+        String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "", "", "", "",""};
         mThumbIds.add(arr);
 
         if (savedInstanceState != null) {
@@ -74,6 +76,7 @@ public class MainActivityFragment extends Fragment {
         setHasOptionsMenu(true);
 
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -205,7 +208,7 @@ public class MainActivityFragment extends Fragment {
 
         } else {
             gridview.setAdapter(null);
-            Toast.makeText(getActivity(), "No Internet Connection!!",
+            Toast.makeText(getActivity(), "No Internet Connection",
                     Toast.LENGTH_SHORT).show();
 
         }
@@ -228,6 +231,7 @@ public class MainActivityFragment extends Fragment {
             final String OVERVIEW = "overview";
             final String VOTES = "vote_average";
             final String RELEASE = "release_date";
+            final String ID="id";
             ArrayList<String[]> newThumbids = new ArrayList<String[]>();
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
@@ -240,7 +244,8 @@ public class MainActivityFragment extends Fragment {
                 String overview = results.getString(OVERVIEW);
                 String voteAvg = results.getString(VOTES);
                 String releaseDate = results.getString(RELEASE);
-                String[] outputAttr = {posterPath, title, overview, voteAvg, releaseDate};
+                String id = results.getString(ID);
+                String[] outputAttr = {posterPath, title, overview, voteAvg, releaseDate,id};
 
                 newThumbids.add(outputAttr);
 
@@ -344,6 +349,7 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
         private LayoutInflater inflater;
@@ -378,11 +384,39 @@ public class MainActivityFragment extends Fragment {
 
             ImageView iv=(ImageView) convertView.findViewById(R.id.cardImagePoster);
 
+            final ImageView favIcon=(ImageView) convertView.findViewById(R.id.cardFavIcon);
+            final String id=mThumbIds.get(position)[5];
+            favIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Do something
+                    String imageName=String.valueOf(favIcon.getTag());
+                    Log.v("Test",imageName);
+
+
+                    if (mFavorites.contains(id)) {
+                        Picasso.with(mContext).load(R.drawable.heart_blank).into(favIcon);
+                        mFavorites.remove(id);
+                    }
+                    else {
+                        Picasso.with(mContext).load(R.drawable.hearts).into(favIcon);
+                        mFavorites.add(id);
+                    }
+                }
+            });
+
+            if (mFavorites.contains(id)) {
+                Picasso.with(mContext).load(R.drawable.hearts).into(favIcon);
+            }
+            else {
+                Picasso.with(mContext).load(R.drawable.heart_blank).into(favIcon);
+            }
+
             TextView titleText=(TextView) convertView.findViewById(R.id.cardMovieTitle);
             titleText.setText(mThumbIds.get(position)[1].trim());
 
             TextView releaseDate=(TextView) convertView.findViewById(R.id.cardMovieDate);
-            releaseDate.setText(mThumbIds.get(position)[4].trim());
+            releaseDate.setText(mThumbIds.get(position)[4].trim()+" "+id);
 
             TextView voteAvg=(TextView) convertView.findViewById(R.id.cardMovieRating);
             voteAvg.setText(mThumbIds.get(position)[3].trim());
