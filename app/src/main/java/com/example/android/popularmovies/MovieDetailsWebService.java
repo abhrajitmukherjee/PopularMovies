@@ -2,10 +2,12 @@ package com.example.android.popularmovies;
 
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,10 +24,11 @@ import retrofit2.http.Path;
 public class MovieDetailsWebService {
 
     FragmentActivity mParentActivity;
+    MovieDetailsFragment mFragment;
 
-    MovieDetailsWebService(FragmentActivity inpContext) {
+    MovieDetailsWebService(FragmentActivity inpContext, MovieDetailsFragment fg) {
         mParentActivity = inpContext;
-
+        mFragment=fg;
     }
 
     public void getReviews(String id) {
@@ -46,7 +49,11 @@ public class MovieDetailsWebService {
                     Log.v("Success", rr.id);
                     TextView tv = (TextView) mParentActivity.findViewById(R.id.reviews);
                     if (rr.results.size() > 0)
-                        tv.setText(rr.results.get(0).content);
+                        for(int i=0;i<rr.results.size();i++){
+                            tv.setText(tv.getText()+"\n---------------------------------------------------------\n"+rr.results.get(i).content);
+
+                        }
+
 
 
                     //
@@ -89,9 +96,15 @@ public class MovieDetailsWebService {
                     MovieVideos rv = response.body();
                     Log.v("Success", rv.id);
                     TextView tv = (TextView) mParentActivity.findViewById(R.id.videos);
-                    if (rv.results.size() > 0)
-                        tv.setText(rv.results.get(0).key);
+                    if (rv.results.size() > 0){
 
+
+                       String utube="http://img.youtube.com/vi/"+rv.results.get(0).key+"/0.jpg";
+                        mFragment.utube.add(rv.results.get(0).key);
+                        ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
+                        Picasso.with(mParentActivity).load(utube).into(iv);
+
+                    }
 
                     //
                     // tasks available

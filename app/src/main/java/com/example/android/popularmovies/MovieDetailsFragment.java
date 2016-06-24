@@ -1,23 +1,33 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MovieDetailsFragment extends Fragment {
+    public ArrayList<String> utube=new ArrayList<>();
 
     public MovieDetailsFragment() {
+    }
+    public void playYoutube(){
+
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=cxLG2wtE7TM")));
     }
 
     @Override
@@ -46,9 +56,21 @@ public class MovieDetailsFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.textRelease))
                     .setText(release);
 
-            MovieDetailsWebService webObj=new MovieDetailsWebService(getActivity());
-            webObj.getReviews(id);
+            MovieDetailsWebService webObj=new MovieDetailsWebService(getActivity(),this);
             webObj.getVideos(id);
+            webObj.getReviews(id);
+
+
+            RelativeLayout rl=(RelativeLayout) rootView.findViewById(R.id.headerLayout);
+            rl.setOnClickListener(new View.OnClickListener(){
+
+                public void onClick(View v) {
+                    // it was the 1st button
+                    String s="http://www.youtube.com/watch?v="+utube.get(0);
+                    Log.v("test",s);
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
+                }
+            });
 
 
         }
