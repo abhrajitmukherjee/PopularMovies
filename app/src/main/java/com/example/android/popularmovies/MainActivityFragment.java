@@ -147,7 +147,8 @@ public class MainActivityFragment extends Fragment {
                         .putExtra(getString(R.string.intent_title), mThumbIds.get(position)[1])
                         .putExtra(getString(R.string.intent_overview), mThumbIds.get(position)[2])
                         .putExtra(getString(R.string.intent_vote_avg), mThumbIds.get(position)[3])
-                        .putExtra(getString(R.string.intent_release_date), mThumbIds.get(position)[4]);
+                        .putExtra(getString(R.string.intent_release_date), mThumbIds.get(position)[4])
+                        .putExtra(getString(R.string.intent_movie_id),mThumbIds.get(position)[5]);
 
 
                 startActivity(intent);

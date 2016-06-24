@@ -32,6 +32,7 @@ public class MovieDetailsFragment extends Fragment {
             String overview = intent.getStringExtra(getString(R.string.intent_overview));
             String vote = intent.getStringExtra(getString(R.string.intent_vote_avg));
             String release = intent.getStringExtra(getString(R.string.intent_release_date));
+            String id=intent.getStringExtra(getString(R.string.intent_movie_id));
 
             Picasso.with(getActivity()).load(posterPath).into(((ImageView) rootView.findViewById(R.id.imagePoster)));
 
@@ -45,8 +46,15 @@ public class MovieDetailsFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.textRelease))
                     .setText(release);
 
+            MovieDetailsWebService webObj=new MovieDetailsWebService(getActivity());
+            webObj.getReviews(id);
+            webObj.getVideos(id);
+
 
         }
+
+
+
         return rootView;
     }
 

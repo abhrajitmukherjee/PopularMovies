@@ -16,6 +16,7 @@
     <string name="intent_overview" translatable="false">overview</string>
     <string name="intent_vote_avg" translatable="false">voteAvg</string>
     <string name="intent_release_date" translatable="false">releaseDate</string>
+    <string name="intent_movie_id" translatable="false">id</string>
 
     <string name="topHeader">Top Rated Movies</string>
     <string name="popularHeader">Most Popular Movies</string>
