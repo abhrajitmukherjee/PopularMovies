@@ -95,16 +95,25 @@ public class MovieDetailsWebService {
                 if (response.isSuccessful()) {
                     MovieVideos rv = response.body();
                     Log.v("Success", rv.id);
-                    TextView tv = (TextView) mParentActivity.findViewById(R.id.videos);
                     if (rv.results.size() > 0){
 
 
                        String utube="http://img.youtube.com/vi/"+rv.results.get(0).key+"/0.jpg";
                         mFragment.utube.add(rv.results.get(0).key);
+                        mFragment.videoList=new ArrayList<>(rv.results);
+                        mFragment.setupRecyclerView(mFragment.rv);
+                        if (mFragment.ad==null){
+                            Log.v("Add is null","yes");
+                        }else{
+                            Log.v("Add is null","no");
+                        }
+                        Log.v("Webservice size",Integer.toString(mFragment.videoList.size()));
+
                         ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
                         Picasso.with(mParentActivity).load(utube).into(iv);
 
                     }
+
 
                     //
                     // tasks available
@@ -161,7 +170,7 @@ public class MovieDetailsWebService {
         public String id;
         @SerializedName("results")
         @Expose
-        public List<VideoResults> results = new ArrayList<VideoResults>();
+        public ArrayList<VideoResults> results = new ArrayList<VideoResults>();
 
     }
 
