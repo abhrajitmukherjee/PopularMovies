@@ -17,6 +17,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/videoThumbnails"
             android:layout_width="150dp"
@@ -24,6 +28,17 @@
             android:adjustViewBounds="true"
             android:scaleType="fitStart"
             android:src="@drawable/blank" />
+
+            <ImageView
+                android:id="@+id/playButtonThumb"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/play_button" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/videoTitle"

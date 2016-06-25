@@ -1,136 +1,141 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_scroll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-        >
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    tools:context="com.example.android.popularmovies.MovieDetailsFragment">
-
-
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
->
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        tools:context="com.example.android.popularmovies.MovieDetailsFragment">
+
+
+        <RelativeLayout
+            android:id="@+id/headerLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/videoHeader"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/playButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/play_button" />
+
+
+        </RelativeLayout>
+
 
         <ImageView
-            android:id="@+id/videoHeader"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:id="@+id/imagePoster"
+            android:layout_width="150dp"
+            android:layout_height="210dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="200dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitStart" />
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/headerLayout"
+            android:layout_toRightOf="@id/imagePoster"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:textColor="@android:color/black"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textRelease"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textTitle"
+            android:layout_toRightOf="@id/imagePoster"
+            android:paddingLeft="@dimen/activity_horizontal_margin" />
+
+
+        <View
+            android:id="@+id/line_poster"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/imagePoster"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/textVote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/line_poster"
+            android:layout_toRightOf="@id/imagePoster"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:textSize="24sp" />
 
         <ImageView
-            android:id="@+id/playButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitStart"
-            android:src="@drawable/play_button" />
-
-
-    </RelativeLayout>
-
-
-    <ImageView
-        android:id="@+id/imagePoster"
-        android:layout_width="150dp"
-        android:layout_height="210dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="200dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitStart" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textTitle"
-        android:layout_below="@id/headerLayout"
-        android:layout_toRightOf="@id/imagePoster"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
-        />
-
-    <TextView
-        android:id="@+id/textRelease"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textTitle"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:layout_toRightOf="@id/imagePoster" />
-
-
-
-
-    <View
-        android:id="@+id/line_poster"
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="#c0c0c0"
-        android:layout_below="@id/imagePoster"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-      />
-
-    <TextView
-        android:id="@+id/textVote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/imagePoster"
-        android:layout_above="@id/line_poster"
-        android:textSize="24sp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        />
-
-    <ImageView
-        android:id="@+id/voteStar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_toRightOf="@id/textVote"
-        android:layout_above="@id/line_poster"
-        android:src="@drawable/ic_grade_black_24dp" />
+            android:id="@+id/voteStar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@id/line_poster"
+            android:layout_toRightOf="@id/textVote"
+            android:src="@drawable/ic_grade_black_24dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/line_poster"
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:layout_below="@id/line_poster">
+            android:paddingRight="@dimen/activity_horizontal_margin">
 
 
             <TextView
                 android:id="@+id/textOverview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="16dp" />
+
+            <View
+                android:id="@+id/line_video"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/textOverview"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="#c0c0c0" />
 
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerviewVideo"
                 android:layout_width="match_parent"
-                android:layout_below="@id/textOverview"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/activity_vertical_margin"
-/>
+                android:layout_below="@id/line_video" />
 
-            <TextView
-                android:id="@+id/reviews"
-                android:layout_width="wrap_content"
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerviewReviews"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recyclerviewVideo"
-                android:padding="16dp" />
-
-
-
+                android:paddingTop="@dimen/activity_vertical_margin"/>
 
 
         </RelativeLayout>
 
-</RelativeLayout>
+
+    </RelativeLayout>
 </ScrollView>
+
+
+
+

@@ -3,7 +3,6 @@ package com.example.android.popularmovies;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -47,12 +46,9 @@ public class MovieDetailsWebService {
                 if (response.isSuccessful()) {
                     RepoReviews rr = response.body();
                     Log.v("Success", rr.id);
-                    TextView tv = (TextView) mParentActivity.findViewById(R.id.reviews);
                     if (rr.results.size() > 0)
-                        for(int i=0;i<rr.results.size();i++){
-                            tv.setText(tv.getText()+"\n---------------------------------------------------------\n"+rr.results.get(i).content);
-
-                        }
+                        mFragment.reviewList=new ArrayList<>(rr.results);
+                        mFragment.setupRecyclerViewReviews(mFragment.rvReviews);
 
 
 
@@ -101,8 +97,8 @@ public class MovieDetailsWebService {
                        String utube="http://img.youtube.com/vi/"+rv.results.get(0).key+"/0.jpg";
                         mFragment.utube.add(rv.results.get(0).key);
                         mFragment.videoList=new ArrayList<>(rv.results);
-                        mFragment.setupRecyclerView(mFragment.rv);
-                        if (mFragment.ad==null){
+                        mFragment.setupRecyclerViewVideos(mFragment.rvVideos);
+                        if (mFragment.adVideos ==null){
                             Log.v("Add is null","yes");
                         }else{
                             Log.v("Add is null","no");
@@ -112,12 +108,20 @@ public class MovieDetailsWebService {
                         ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
                         Picasso.with(mParentActivity).load(utube).into(iv);
 
+                    }else
+                    {
+                        ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
+                        Picasso.with(mParentActivity).load(mFragment.posterPath).into(iv);
+
+                        ImageView iv1=(ImageView) mParentActivity.findViewById(R.id.playButton);
+                        Picasso.with(mParentActivity).load("http://img.youtube.com/vi/0.jpg").into(iv1);
                     }
 
 
                     //
                     // tasks available
                 } else {
+
                     try {
                         Log.d("Test", "Error - Status : " + response.errorBody().string());
                     } catch (IOException e) {

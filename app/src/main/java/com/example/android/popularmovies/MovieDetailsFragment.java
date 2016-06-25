@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,12 @@ import java.util.ArrayList;
 public class MovieDetailsFragment extends Fragment {
     public ArrayList<String> utube = new ArrayList<>();
     public ArrayList<MovieDetailsWebService.VideoResults> videoList = new ArrayList<>();
-    SimpleStringRecyclerViewAdapter ad;
-    RecyclerView rv;
+    public ArrayList<MovieDetailsWebService.RepoResults> reviewList = new ArrayList<>();
+    VideoRecyclerViewAdapter adVideos;
+    CommentsRecyclerViewAdapter adReviews;
+    RecyclerView rvVideos;
+    RecyclerView rvReviews;
+    String posterPath;
 
 
     public MovieDetailsFragment() {
@@ -37,10 +40,14 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Log.v("START Videolist size",Integer.toString(videoList.size()));
+        Log.v("START Videolist size", Integer.toString(videoList.size()));
 
-        rv = (RecyclerView) getActivity().findViewById(R.id.recyclerviewVideo);
-        setupRecyclerView(rv);
+        rvVideos = (RecyclerView) getActivity().findViewById(R.id.recyclerviewVideo);
+        setupRecyclerViewVideos(rvVideos);
+
+        rvReviews = (RecyclerView) getActivity().findViewById(R.id.recyclerviewReviews);
+        setupRecyclerViewReviews(rvReviews);
+        rvReviews.setNestedScrollingEnabled(false);
     }
 
     @Override
@@ -50,7 +57,7 @@ public class MovieDetailsFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(getString(R.string.intent_poster_path))) {
-            String posterPath = intent.getStringExtra(getString(R.string.intent_poster_path));
+            posterPath = intent.getStringExtra(getString(R.string.intent_poster_path));
             String title = intent.getStringExtra(getString(R.string.intent_title));
             String overview = intent.getStringExtra(getString(R.string.intent_overview));
             String vote = intent.getStringExtra(getString(R.string.intent_vote_avg));
@@ -71,17 +78,21 @@ public class MovieDetailsFragment extends Fragment {
 
             MovieDetailsWebService webObj = new MovieDetailsWebService(getActivity(), this);
             webObj.getVideos(id);
-          //  webObj.getReviews(id);
-            Log.v("Main Videolist size",Integer.toString(videoList.size()));
+            webObj.getReviews(id);
+            Log.v("Main Videolist size", Integer.toString(videoList.size()));
 
             RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.headerLayout);
             rl.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
                     // it was the 1st button
-                    String s = "http://www.youtube.com/watch?v=" + utube.get(0);
-                    Log.v("test", s+" "+Integer.toString(videoList.size()));
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
+                    if (utube.size() > 0) {
+                        String s = "http://www.youtube.com/watch?v=" + utube.get(0);
+                        Log.v("test", s + " " + Integer.toString(videoList.size()));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
+
+                    }
+
                 }
             });
 
@@ -93,54 +104,57 @@ public class MovieDetailsFragment extends Fragment {
     }
 
 
-    public void setupRecyclerView(RecyclerView recyclerView) {
+    public void setupRecyclerViewVideos(RecyclerView recyclerView) {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        Log.v("Adapter Videolist size",Integer.toString(videoList.size())+" "+utube);
+        Log.v("Adapter Videolist size", Integer.toString(videoList.size()) + " " + utube);
 
-        ad= new SimpleStringRecyclerViewAdapter(getActivity(),
+        adVideos = new VideoRecyclerViewAdapter(getActivity(),
                 videoList);
-        recyclerView.setAdapter(ad);
-            }
+        recyclerView.setAdapter(adVideos);
+    }
+
+    public void setupRecyclerViewReviews(RecyclerView recyclerView) {
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        Log.v("Adapter Videolist size", Integer.toString(videoList.size()) + " " + utube);
+
+        adReviews = new CommentsRecyclerViewAdapter(getActivity(),
+                reviewList);
+        recyclerView.setAdapter(adReviews);
+    }
 
 
-    public static class SimpleStringRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleStringRecyclerViewAdapter.ViewHolder> {
+    public static class VideoRecyclerViewAdapter
+            extends RecyclerView.Adapter<VideoRecyclerViewAdapter.ViewHolder> {
 
-        private final TypedValue mTypedValue = new TypedValue();
-        private int mBackground;
         private ArrayList<MovieDetailsWebService.VideoResults> mValues;
 
-        public SimpleStringRecyclerViewAdapter(Context context, ArrayList<MovieDetailsWebService.VideoResults> items) {
-            context.getTheme().resolveAttribute(R.attr.selectableItemBackground, mTypedValue, true);
-            mBackground = mTypedValue.resourceId;
+        public VideoRecyclerViewAdapter(Context context, ArrayList<MovieDetailsWebService.VideoResults> items) {
             mValues = (ArrayList<MovieDetailsWebService.VideoResults>) items.clone();
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.video_scroll_layout,parent,false);
-     //       view.setBackgroundResource(mBackground);
+                    .inflate(R.layout.video_scroll_layout, parent, false);
+            //       view.setBackgroundResource(mBackground);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-
-//            holder.mView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Context context = v.getContext();
-//                    Intent intent = new Intent(context, CheeseDetailActivity.class);
-//                    intent.putExtra(CheeseDetailActivity.EXTRA_NAME, holder.mBoundString);
-//
-//                    context.startActivity(intent);
-//                    return true;
-//                }
-//            });
-            Log.v("Image View text","http://img.youtube.com/vi/" + mValues.get(position).key + "/1.jpg");
+            final int pos = position;
+            holder.mImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String s = "http://www.youtube.com/watch?v=" + mValues.get(pos).key + "0.jpg";
+                    v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
+                }
+            });
+            Log.v("Image View text", "http://img.youtube.com/vi/" + mValues.get(position).key + "/1.jpg");
             Picasso.with(holder.mImageView.getContext()).
                     load("http://img.youtube.com/vi/" + mValues.get(position).key + "/0.jpg")
                     .into(holder.mImageView);
@@ -151,7 +165,7 @@ public class MovieDetailsFragment extends Fragment {
         @Override
         public int getItemCount() {
 
-            Log.v("COUNT___", Integer.toString(mValues.size()));
+            Log.v("REVIEW COUNT___", Integer.toString(mValues.size()));
             return mValues.size();
         }
 
@@ -160,11 +174,75 @@ public class MovieDetailsFragment extends Fragment {
             public final View mView;
             public final ImageView mImageView;
             public final TextView mTextView;
+
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mImageView = (ImageView) view.findViewById(R.id.videoThumbnails);
-                mTextView=(TextView) view.findViewById(R.id.videoTitle);
+                mTextView = (TextView) view.findViewById(R.id.videoTitle);
+
+            }
+
+        }
+    }
+
+
+    public static class CommentsRecyclerViewAdapter
+            extends RecyclerView.Adapter<CommentsRecyclerViewAdapter.ViewHolder> {
+
+        private ArrayList<MovieDetailsWebService.RepoResults> mValuesComments;
+
+        public CommentsRecyclerViewAdapter(Context context, ArrayList<MovieDetailsWebService.RepoResults> items) {
+            mValuesComments = (ArrayList<MovieDetailsWebService.RepoResults>) items.clone();
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.comments_scroll_layout, parent, false);
+            //       view.setBackgroundResource(mBackground);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final ViewHolder holder, int position) {
+//            final int pos=position;
+//            holder.mImageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    String s = "http://www.youtube.com/watch?v=" + mValuesComments.get(pos).key+"0.jpg";
+//                    v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
+//                }
+//            });
+            Picasso.with(holder.mImageView.getContext()).
+                    load(R.drawable.avatar)
+                    .into(holder.mImageView);
+            holder.mTextView.setText(mValuesComments.get(position).content.trim());
+            holder.mAuthorView.setText(mValuesComments.get(position).author.trim());
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+
+            Log.v("COMMENT COUNT___", Integer.toString(mValuesComments.size()));
+            return mValuesComments.size();
+        }
+
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+
+            public final View mView;
+            public final ImageView mImageView;
+            public final TextView mTextView;
+            public final TextView mAuthorView;
+
+            public ViewHolder(View view) {
+                super(view);
+                mView = view;
+                mImageView = (ImageView) view.findViewById(R.id.image_avatar);
+                mTextView = (TextView) view.findViewById(R.id.comment_text);
+                mAuthorView = (TextView) view.findViewById(R.id.author_name);
 
             }
 

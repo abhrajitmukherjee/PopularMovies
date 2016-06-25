@@ -2,9 +2,9 @@ package com.example.android.popularmovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -13,10 +13,12 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        ImageView iv = (ImageView) findViewById(R.id.image_attribution);
-        Picasso.
-                with(this).
-                load("https://assets.tmdb.org/images/logos/var_7_0_tmdb-logo-2_Antitled.png").
-                into(iv);
+        TextView textView =(TextView)findViewById(R.id.textTitle1);
+        textView.setClickable(true);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        String text = "Tweet me  <a href='http://twitter.com/abhrajit'>@abhrajit</a>";
+        textView.setText(Html.fromHtml(text));
+
     }
 }
