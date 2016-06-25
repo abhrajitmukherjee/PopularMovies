@@ -55,14 +55,16 @@ public class MovieDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(getString(R.string.intent_poster_path))) {
-            posterPath = intent.getStringExtra(getString(R.string.intent_poster_path));
-            String title = intent.getStringExtra(getString(R.string.intent_title));
-            String overview = intent.getStringExtra(getString(R.string.intent_overview));
-            String vote = intent.getStringExtra(getString(R.string.intent_vote_avg));
-            String release = intent.getStringExtra(getString(R.string.intent_release_date));
-            String id = intent.getStringExtra(getString(R.string.intent_movie_id));
+        Bundle arguments = getArguments();
+
+            if (arguments!=null){
+
+                posterPath = arguments.getString(getString(R.string.intent_poster_path));
+            String title = arguments.getString(getString(R.string.intent_title));
+            String overview = arguments.getString(getString(R.string.intent_overview));
+            String vote = arguments.getString(getString(R.string.intent_vote_avg));
+            String release = arguments.getString(getString(R.string.intent_release_date));
+            String id = arguments.getString(getString(R.string.intent_movie_id));
 
             Picasso.with(getActivity()).load(posterPath).into(((ImageView) rootView.findViewById(R.id.imagePoster)));
 

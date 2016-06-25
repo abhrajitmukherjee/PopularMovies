@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:adjustViewBounds="true"
+                android:background="@color/colorPrimary"
                 android:scaleType="centerCrop" />
 
             <ImageView
@@ -30,7 +31,7 @@
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
                 android:scaleType="fitStart"
-                android:src="@drawable/play_button" />
+ />
 
 
         </RelativeLayout>
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/headerLayout"
             android:layout_toRightOf="@id/imagePoster"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
             android:textColor="@android:color/black"
             android:textSize="24sp" />
 
@@ -61,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textTitle"
             android:layout_toRightOf="@id/imagePoster"
-            android:paddingLeft="@dimen/activity_horizontal_margin" />
+/>
 
 
         <View
@@ -78,7 +79,6 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/line_poster"
             android:layout_toRightOf="@id/imagePoster"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
             android:textSize="24sp" />
 
         <ImageView

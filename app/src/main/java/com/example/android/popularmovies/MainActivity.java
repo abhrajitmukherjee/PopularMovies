@@ -6,7 +6,53 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.Callback {
+
+    private boolean mTwoPane;
+
+
+    @Override
+    public void onItemSelected(ArrayList<String[]> mThumbIds,int position){
+
+        if (mTwoPane){
+
+            Bundle args = new Bundle();
+            args.putString(getString(R.string.intent_poster_path), mThumbIds.get(position)[0]);
+            args.putString(getString(R.string.intent_title), mThumbIds.get(position)[1]);
+            args.putString(getString(R.string.intent_overview), mThumbIds.get(position)[2]);
+            args.putString(getString(R.string.intent_vote_avg), mThumbIds.get(position)[3]);
+            args.putString(getString(R.string.intent_release_date), mThumbIds.get(position)[4]);
+            args.putString(getString(R.string.intent_movie_id), mThumbIds.get(position)[5]);
+
+
+
+            MovieDetailsFragment movFragment = new MovieDetailsFragment();
+            movFragment.setArguments(args);
+
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_detail_container, movFragment)
+                    .commit();
+
+        }
+        else
+        {
+
+            Intent intent = new Intent(this, MovieDetailsActivity.class)
+                    .putExtra(getString(R.string.intent_poster_path), mThumbIds.get(position)[0])
+                    .putExtra(getString(R.string.intent_title), mThumbIds.get(position)[1])
+                    .putExtra(getString(R.string.intent_overview), mThumbIds.get(position)[2])
+                    .putExtra(getString(R.string.intent_vote_avg), mThumbIds.get(position)[3])
+                    .putExtra(getString(R.string.intent_release_date), mThumbIds.get(position)[4])
+                    .putExtra(getString(R.string.intent_movie_id), mThumbIds.get(position)[5]);
+            startActivity(intent);
+
+        }
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,12 +60,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_container, new MainActivityFragment())
-                    .commit();
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.main_container, new MainActivityFragment())
+//                    .commit();
+//
+//        }
 
+        if (findViewById(R.id.fragment_detail_container)!=null){
+            mTwoPane=true;
         }
+        else{
+            mTwoPane=false;
+        }
+
 
     }
 

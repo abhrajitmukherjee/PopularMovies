@@ -1,11 +1,12 @@
 package com.example.android.popularmovies;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -55,6 +56,10 @@ public class MainActivityFragment extends Fragment {
 
     }
 
+    public interface Callback {
+        public void onItemSelected(ArrayList<String[]> mThumbIds, int position);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,7 @@ public class MainActivityFragment extends Fragment {
     }
 
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_main, menu);
@@ -125,6 +131,9 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
+
+
+
         spinner.setPopupBackgroundResource(R.color.colorAccent);
 
 
@@ -142,16 +151,11 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Intent intent = new Intent(getActivity(), MovieDetailsActivity.class)
-                        .putExtra(getString(R.string.intent_poster_path), mThumbIds.get(position)[0])
-                        .putExtra(getString(R.string.intent_title), mThumbIds.get(position)[1])
-                        .putExtra(getString(R.string.intent_overview), mThumbIds.get(position)[2])
-                        .putExtra(getString(R.string.intent_vote_avg), mThumbIds.get(position)[3])
-                        .putExtra(getString(R.string.intent_release_date), mThumbIds.get(position)[4])
-                        .putExtra(getString(R.string.intent_movie_id),mThumbIds.get(position)[5]);
+
+                ((Callback)getActivity()).onItemSelected(mThumbIds,position);
 
 
-                startActivity(intent);
+
             }
         });
 
@@ -417,9 +421,10 @@ public class MainActivityFragment extends Fragment {
             titleText.setText(mThumbIds.get(position)[1].trim());
 
             TextView releaseDate=(TextView) convertView.findViewById(R.id.cardMovieDate);
-            releaseDate.setText(mThumbIds.get(position)[4].trim()+" "+id);
+            releaseDate.setText(mThumbIds.get(position)[4].trim());
 
             TextView voteAvg=(TextView) convertView.findViewById(R.id.cardMovieRating);
+
             voteAvg.setText(mThumbIds.get(position)[3].trim());
 
 

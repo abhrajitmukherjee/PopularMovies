@@ -108,6 +108,9 @@ public class MovieDetailsWebService {
                         ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
                         Picasso.with(mParentActivity).load(utube).into(iv);
 
+                        ImageView iv1=(ImageView) mParentActivity.findViewById(R.id.playButton);
+                        Picasso.with(mParentActivity).load(R.drawable.play_button).into(iv1);
+
                     }else
                     {
                         ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
