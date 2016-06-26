@@ -56,6 +56,8 @@
             android:textColor="@android:color/black"
             android:textSize="24sp" />
 
+
+
         <TextView
             android:id="@+id/textRelease"
             android:layout_width="wrap_content"
@@ -85,9 +87,21 @@
             android:id="@+id/voteStar"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:paddingBottom="2dp"
             android:layout_above="@id/line_poster"
             android:layout_toRightOf="@id/textVote"
             android:src="@drawable/ic_grade_black_24dp" />
+
+        <ImageView
+            android:id="@+id/cardFavIconDetail"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/line_poster"
+            android:scaleType="fitStart"
+            android:src="@drawable/heart_blank" />
 
         <RelativeLayout
             android:layout_width="match_parent"

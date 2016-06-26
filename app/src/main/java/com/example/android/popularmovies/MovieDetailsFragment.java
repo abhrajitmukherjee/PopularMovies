@@ -1,10 +1,18 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +23,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.data.MoviesContract;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 
@@ -32,6 +44,44 @@ public class MovieDetailsFragment extends Fragment {
     RecyclerView rvVideos;
     RecyclerView rvReviews;
     String posterPath;
+    String title;
+    String overview;
+    String vote;
+    String release;
+    String id;
+    String fileName;
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String[] segments = posterPath.split("/");
+                    fileName = segments[segments.length - 1];
+                    File file = new File(
+                            Environment.getExternalStorageDirectory().getPath()
+                                    + fileName);
+                    try {
+                        file.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                        ostream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
 
 
     public MovieDetailsFragment() {
@@ -57,14 +107,14 @@ public class MovieDetailsFragment extends Fragment {
 
         Bundle arguments = getArguments();
 
-            if (arguments!=null){
+        if (arguments != null) {
 
-                posterPath = arguments.getString(getString(R.string.intent_poster_path));
-            String title = arguments.getString(getString(R.string.intent_title));
-            String overview = arguments.getString(getString(R.string.intent_overview));
-            String vote = arguments.getString(getString(R.string.intent_vote_avg));
-            String release = arguments.getString(getString(R.string.intent_release_date));
-            String id = arguments.getString(getString(R.string.intent_movie_id));
+            posterPath = arguments.getString(getString(R.string.intent_poster_path));
+            title = arguments.getString(getString(R.string.intent_title));
+            overview = arguments.getString(getString(R.string.intent_overview));
+            vote = arguments.getString(getString(R.string.intent_vote_avg));
+            release = arguments.getString(getString(R.string.intent_release_date));
+            id = arguments.getString(getString(R.string.intent_movie_id));
 
             Picasso.with(getActivity()).load(posterPath).into(((ImageView) rootView.findViewById(R.id.imagePoster)));
 
@@ -105,6 +155,76 @@ public class MovieDetailsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        final ImageView favIcon = (ImageView) getActivity().findViewById(R.id.cardFavIconDetail);
+        final int test = 0;
+        ContentResolver cr = getActivity().getContentResolver();
+        ContentValues cValues = new ContentValues();
+        String selection= MoviesContract.MovieEntry.MOVIE_ID+"='"+id+"'";
+        Cursor c = cr.query(MoviesContract.MovieEntry.CONTENT_URI, null,
+                selection, null, null);
+        String dbMovieId="";
+        if(c.moveToFirst()){
+            do{
+                //assing values
+                dbMovieId = c.getString(1);
+
+            }while(c.moveToNext());
+        }
+        if (dbMovieId.equals(id)) {
+            Picasso.with(getActivity()).load(R.drawable.hearts).into(favIcon);
+
+        } else {
+            Picasso.with(getActivity()).load(R.drawable.heart_blank).into(favIcon);
+        }
+
+
+
+        favIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Do something
+
+                ContentResolver cr = getActivity().getContentResolver();
+                ContentValues cValues = new ContentValues();
+//                cValues.put(MoviesContract.MovieEntry.MOVIE_ID,id);
+//                cValues.put(MoviesContract.MovieEntry.POSTER,posterPath);
+//                cValues.put(MoviesContract.MovieEntry.TITLE, title);
+//                cValues.put(MoviesContract.MovieEntry.RELEASE_DATE, release);
+//                cValues.put(MoviesContract.MovieEntry.RATING, vote);
+//                cValues.put(MoviesContract.MovieEntry.IS_FAVORITE, "YES");
+//                cr.insert(MoviesContract.MovieEntry.CONTENT_URI, cValues);
+//                cr.delete(MoviesContract.MovieEntry.CONTENT_URI, "_ID=113", null);
+                String selection= MoviesContract.MovieEntry.MOVIE_ID+"='"+id+"'";
+                Cursor c = cr.query(MoviesContract.MovieEntry.CONTENT_URI, null,
+                        selection, null, null);
+                String dbMovieId="";
+                if(c.moveToFirst()){
+                    do{
+                        //assing values
+                         dbMovieId = c.getString(1);
+
+                    }while(c.moveToNext());
+                }
+                Log.v("onclik's id:",dbMovieId);
+                if (dbMovieId.equals(id)) {
+                    Picasso.with(getActivity()).load(R.drawable.heart_blank).into(favIcon);
+                    cr.delete(MoviesContract.MovieEntry.CONTENT_URI, selection, null);
+
+                } else {
+                    Picasso.with(getActivity()).load(R.drawable.hearts).into(favIcon);
+                    cValues.put(MoviesContract.MovieEntry.MOVIE_ID,id);
+                    cr.insert(MoviesContract.MovieEntry.CONTENT_URI, cValues);
+                }
+
+
+            }
+        });
+
+    }
 
     public void setupRecyclerViewVideos(RecyclerView recyclerView) {
         LinearLayoutManager layoutManager
@@ -149,7 +269,7 @@ public class MovieDetailsFragment extends Fragment {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             final int pos = position;
-            holder.mImageView.setOnClickListener(new View.OnClickListener() {
+            holder.mCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String s = "http://www.youtube.com/watch?v=" + mValues.get(pos).key + "0.jpg";
@@ -176,12 +296,14 @@ public class MovieDetailsFragment extends Fragment {
             public final View mView;
             public final ImageView mImageView;
             public final TextView mTextView;
+            public final CardView mCardView;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mImageView = (ImageView) view.findViewById(R.id.videoThumbnails);
                 mTextView = (TextView) view.findViewById(R.id.videoTitle);
+                mCardView = (CardView) view.findViewById(R.id.card_view_video);
 
             }
 
@@ -238,6 +360,8 @@ public class MovieDetailsFragment extends Fragment {
             public final ImageView mImageView;
             public final TextView mTextView;
             public final TextView mAuthorView;
+            public final CardView mCardView;
+
 
             public ViewHolder(View view) {
                 super(view);
@@ -245,6 +369,7 @@ public class MovieDetailsFragment extends Fragment {
                 mImageView = (ImageView) view.findViewById(R.id.image_avatar);
                 mTextView = (TextView) view.findViewById(R.id.comment_text);
                 mAuthorView = (TextView) view.findViewById(R.id.author_name);
+                mCardView = (CardView) view.findViewById(R.id.card_view_comments);
 
             }
 
