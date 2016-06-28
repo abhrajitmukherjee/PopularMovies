@@ -59,14 +59,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.main_container, new MainActivityFragment())
-//                    .commit();
-//
-//        }
-
         if (findViewById(R.id.fragment_detail_container)!=null){
             mTwoPane=true;
         }

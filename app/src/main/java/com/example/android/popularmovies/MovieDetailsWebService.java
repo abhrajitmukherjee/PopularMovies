@@ -45,7 +45,6 @@ public class MovieDetailsWebService {
 
                 if (response.isSuccessful()) {
                     RepoReviews rr = response.body();
-                    Log.v("Success", rr.id);
                     if (rr.results.size() > 0)
                         mFragment.reviewList=new ArrayList<>(rr.results);
                         mFragment.setupRecyclerViewReviews(mFragment.rvReviews);
@@ -67,7 +66,6 @@ public class MovieDetailsWebService {
 
             @Override
             public void onFailure(Call<RepoReviews> call, Throwable t) {
-                // something went completely south (like no internet connection)
                 Log.d("Error----", t.getMessage());
             }
         });
@@ -90,7 +88,6 @@ public class MovieDetailsWebService {
 
                 if (response.isSuccessful()) {
                     MovieVideos rv = response.body();
-                    Log.v("Success", rv.id);
                     if (rv.results.size() > 0){
 
 
@@ -98,12 +95,6 @@ public class MovieDetailsWebService {
                         mFragment.utube.add(rv.results.get(0).key);
                         mFragment.videoList=new ArrayList<>(rv.results);
                         mFragment.setupRecyclerViewVideos(mFragment.rvVideos);
-                        if (mFragment.adVideos ==null){
-                            Log.v("Add is null","yes");
-                        }else{
-                            Log.v("Add is null","no");
-                        }
-                        Log.v("Webservice size",Integer.toString(mFragment.videoList.size()));
 
                         ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
                         Picasso.with(mParentActivity).load(utube).into(iv);
@@ -137,7 +128,6 @@ public class MovieDetailsWebService {
 
             @Override
             public void onFailure(Call<MovieVideos> call, Throwable t) {
-                // something went completely south (like no internet connection)
                 Log.d("Error----", t.getMessage());
             }
         });

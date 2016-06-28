@@ -5,30 +5,27 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.data.MoviesContract;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 
@@ -49,48 +46,11 @@ public class MovieDetailsFragment extends Fragment {
     String vote;
     String release;
     String id;
-    String fileName;
-
-    private Target target = new Target() {
-        @Override
-        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    String[] segments = posterPath.split("/");
-                    fileName = segments[segments.length - 1];
-                    File file = new File(
-                            Environment.getExternalStorageDirectory().getPath()
-                                    + fileName);
-                    try {
-                        file.createNewFile();
-                        FileOutputStream ostream = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-                        ostream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-        }
-    };
-
-
-    public MovieDetailsFragment() {
-    }
+    MovieDetailsWebService webObj;
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.v("START Videolist size", Integer.toString(videoList.size()));
 
         rvVideos = (RecyclerView) getActivity().findViewById(R.id.recyclerviewVideo);
         setupRecyclerViewVideos(rvVideos);
@@ -128,10 +88,27 @@ public class MovieDetailsFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.textRelease))
                     .setText(release);
 
-            MovieDetailsWebService webObj = new MovieDetailsWebService(getActivity(), this);
-            webObj.getVideos(id);
-            webObj.getReviews(id);
-            Log.v("Main Videolist size", Integer.toString(videoList.size()));
+            ConnectivityManager cm =
+                    (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+
+            if (isConnected) {
+
+                webObj = new MovieDetailsWebService(getActivity(), this);
+                webObj.getVideos(id);
+                webObj.getReviews(id);
+
+            } else {
+
+                Toast.makeText(getActivity(), "No Internet Connection",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+
+
 
             RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.headerLayout);
             rl.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +117,25 @@ public class MovieDetailsFragment extends Fragment {
                     // it was the 1st button
                     if (utube.size() > 0) {
                         String s = "http://www.youtube.com/watch?v=" + utube.get(0);
-                        Log.v("test", s + " " + Integer.toString(videoList.size()));
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
+
+                    }
+
+                }
+            });
+
+            FloatingActionButton fl = (FloatingActionButton) rootView.findViewById(R.id.floatingButton);
+            fl.setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    // it was the 1st button
+                    if (utube.size() > 0) {
+                        String s = "http://www.youtube.com/watch?v=" + utube.get(0);
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, s);
+                        sendIntent.setType("text/plain");
+                        startActivity(sendIntent);
 
                     }
 
@@ -158,71 +152,71 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        final ImageView favIcon = (ImageView) getActivity().findViewById(R.id.cardFavIconDetail);
-        final int test = 0;
+        final FloatingActionButton floatFav=(FloatingActionButton)
+                getActivity().findViewById(R.id.floatingFavorite);
         ContentResolver cr = getActivity().getContentResolver();
         ContentValues cValues = new ContentValues();
-        String selection= MoviesContract.MovieEntry.MOVIE_ID+"='"+id+"'";
+        String selection = MoviesContract.MovieEntry.MOVIE_ID + "='" + id + "'";
         Cursor c = cr.query(MoviesContract.MovieEntry.CONTENT_URI, null,
                 selection, null, null);
-        String dbMovieId="";
-        if(c.moveToFirst()){
-            do{
-                //assing values
+        String dbMovieId = "";
+        if (c.moveToFirst()) {
+
                 dbMovieId = c.getString(1);
 
-            }while(c.moveToNext());
         }
         if (dbMovieId.equals(id)) {
-            Picasso.with(getActivity()).load(R.drawable.hearts).into(favIcon);
+            floatFav.setImageResource(R.drawable.hearts);
 
         } else {
-            Picasso.with(getActivity()).load(R.drawable.heart_blank).into(favIcon);
+            floatFav.setImageResource(R.drawable.heart_blank);
         }
 
 
+ final FloatingActionButton floatingFav=(FloatingActionButton) getActivity().
+                findViewById(R.id.floatingFavorite);
 
-        favIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Do something
+        floatingFav.setOnClickListener
+                (new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         // Do something
 
-                ContentResolver cr = getActivity().getContentResolver();
-                ContentValues cValues = new ContentValues();
-//                cValues.put(MoviesContract.MovieEntry.MOVIE_ID,id);
-//                cValues.put(MoviesContract.MovieEntry.POSTER,posterPath);
-//                cValues.put(MoviesContract.MovieEntry.TITLE, title);
-//                cValues.put(MoviesContract.MovieEntry.RELEASE_DATE, release);
-//                cValues.put(MoviesContract.MovieEntry.RATING, vote);
-//                cValues.put(MoviesContract.MovieEntry.IS_FAVORITE, "YES");
-//                cr.insert(MoviesContract.MovieEntry.CONTENT_URI, cValues);
-//                cr.delete(MoviesContract.MovieEntry.CONTENT_URI, "_ID=113", null);
-                String selection= MoviesContract.MovieEntry.MOVIE_ID+"='"+id+"'";
-                Cursor c = cr.query(MoviesContract.MovieEntry.CONTENT_URI, null,
-                        selection, null, null);
-                String dbMovieId="";
-                if(c.moveToFirst()){
-                    do{
-                        //assing values
-                         dbMovieId = c.getString(1);
-
-                    }while(c.moveToNext());
-                }
-                Log.v("onclik's id:",dbMovieId);
-                if (dbMovieId.equals(id)) {
-                    Picasso.with(getActivity()).load(R.drawable.heart_blank).into(favIcon);
-                    cr.delete(MoviesContract.MovieEntry.CONTENT_URI, selection, null);
-
-                } else {
-                    Picasso.with(getActivity()).load(R.drawable.hearts).into(favIcon);
-                    cValues.put(MoviesContract.MovieEntry.MOVIE_ID,id);
-                    cr.insert(MoviesContract.MovieEntry.CONTENT_URI, cValues);
-                }
+                         ContentResolver cr = getActivity().getContentResolver();
+                         ContentValues cValues = new ContentValues();
+                         String selection = MoviesContract.MovieEntry.MOVIE_ID + "='" + id + "'";
+                         Cursor c = cr.query(MoviesContract.MovieEntry.CONTENT_URI, null,
+                                 selection, null, null);
+                         String dbMovieId = "";
+                         if (c.moveToFirst()) {
+                             dbMovieId = c.getString(1);
 
 
-            }
-        });
+                         }
+                         if (dbMovieId.equals(id)) {
+                             floatingFav.setImageResource(R.drawable.heart_blank);
+                             cr.delete(MoviesContract.MovieEntry.CONTENT_URI, selection, null);
+
+                         } else {
+                             floatingFav.setImageResource(R.drawable.hearts);
+                             cValues.put(MoviesContract.MovieEntry.MOVIE_ID, id);
+                             cValues.put(MoviesContract.MovieEntry.POSTER, posterPath);
+                             cValues.put(MoviesContract.MovieEntry.TITLE, title);
+                             cValues.put(MoviesContract.MovieEntry.OVERVIEW, overview);
+                             cValues.put(MoviesContract.MovieEntry.RELEASE_DATE, release);
+                             cValues.put(MoviesContract.MovieEntry.RATING, vote);
+                             cValues.put(MoviesContract.MovieEntry.IS_FAVORITE, "YES");
+                             cr.insert(MoviesContract.MovieEntry.CONTENT_URI, cValues);
+                         }
+
+
+                     }
+                 }
+
+                );
+
+
+
 
     }
 
@@ -230,7 +224,6 @@ public class MovieDetailsFragment extends Fragment {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        Log.v("Adapter Videolist size", Integer.toString(videoList.size()) + " " + utube);
 
         adVideos = new VideoRecyclerViewAdapter(getActivity(),
                 videoList);
@@ -241,7 +234,7 @@ public class MovieDetailsFragment extends Fragment {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        Log.v("Adapter Videolist size", Integer.toString(videoList.size()) + " " + utube);
+
 
         adReviews = new CommentsRecyclerViewAdapter(getActivity(),
                 reviewList);
@@ -276,7 +269,6 @@ public class MovieDetailsFragment extends Fragment {
                     v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
                 }
             });
-            Log.v("Image View text", "http://img.youtube.com/vi/" + mValues.get(position).key + "/1.jpg");
             Picasso.with(holder.mImageView.getContext()).
                     load("http://img.youtube.com/vi/" + mValues.get(position).key + "/0.jpg")
                     .into(holder.mImageView);
@@ -287,7 +279,7 @@ public class MovieDetailsFragment extends Fragment {
         @Override
         public int getItemCount() {
 
-            Log.v("REVIEW COUNT___", Integer.toString(mValues.size()));
+
             return mValues.size();
         }
 
@@ -330,14 +322,6 @@ public class MovieDetailsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-//            final int pos=position;
-//            holder.mImageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    String s = "http://www.youtube.com/watch?v=" + mValuesComments.get(pos).key+"0.jpg";
-//                    v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(s)));
-//                }
-//            });
             Picasso.with(holder.mImageView.getContext()).
                     load(R.drawable.avatar)
                     .into(holder.mImageView);
@@ -350,7 +334,6 @@ public class MovieDetailsFragment extends Fragment {
         @Override
         public int getItemCount() {
 
-            Log.v("COMMENT COUNT___", Integer.toString(mValuesComments.size()));
             return mValuesComments.size();
         }
 

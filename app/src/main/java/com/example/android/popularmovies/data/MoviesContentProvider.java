@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 public class MoviesContentProvider extends ContentProvider {
 
@@ -56,13 +55,11 @@ public class MoviesContentProvider extends ContentProvider {
         Cursor cursor;
         final int match = sUriMatcher.match(uri);
         SQLiteDatabase db=mOpenHelper.getReadableDatabase();
-        Log.v("Query urimatcher--",Integer.toString(match));
         cursor=null;
         switch (match) {
             case MOVIES:
                 cursor = db.query(MoviesContract.MovieEntry.TABLE_NAME ,null,
                         selection, selectionArgs, null, null, sortOrder);
-                Log.v("Query urimatcher--","I came here");
                 break;
 
 
@@ -82,13 +79,11 @@ public class MoviesContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor;
         final int match = sUriMatcher.match(uri);
-        Log.v("Insert urimatcher--",Integer.toString(match));
         SQLiteDatabase db=mOpenHelper.getWritableDatabase();
         int id;
         switch (match) {
             case MOVIES:
                 id = db.delete(MoviesContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
-                Log.v("Id is there?", Long.toString(id));
                 break;
             case MOVIES_WITH_ID:
                 id=0;
@@ -110,13 +105,11 @@ public class MoviesContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         Cursor cursor;
         final int match = sUriMatcher.match(uri);
-        Log.v("Insert urimatcher--",Integer.toString(match));
         SQLiteDatabase db=mOpenHelper.getWritableDatabase();
         cursor=null;
         switch (match) {
             case MOVIES:
                 long id = db.insert(MoviesContract.MovieEntry.TABLE_NAME,null,values);
-                Log.v("Id is there?", Long.toString(id));
                 break;
             case MOVIES_WITH_ID:
                 break;

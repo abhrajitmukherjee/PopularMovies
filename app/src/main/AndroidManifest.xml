@@ -3,9 +3,6 @@
     package="com.example.android.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-
     <!-- Used to adjust the work load depending on the type of network the device is using. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 

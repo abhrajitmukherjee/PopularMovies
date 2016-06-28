@@ -1,12 +1,12 @@
 package com.example.android.popularmovies;
 
-import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.data.MoviesContract;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 public class MainActivityFragment extends Fragment {
 
     public ArrayList<String[]> mThumbIds;
-    public ArrayList<String> mFavorites;
     boolean recallFlag = true;
     String sortType;
     private ImageAdapter mImageAdapter;
@@ -65,7 +65,6 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mThumbIds = new ArrayList<>();
-        mFavorites=new ArrayList<>();
         //Initialized with dummy values to prevent on load freeze
         String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "", "", "", "",""};
         mThumbIds.add(arr);
@@ -83,7 +82,6 @@ public class MainActivityFragment extends Fragment {
     }
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_main, menu);
@@ -116,10 +114,14 @@ public class MainActivityFragment extends Fragment {
                 if (position == 0) {
                     sortType = getString(R.string.base_uri_popular);
                     headerText=getString(R.string.popularHeader);
-                } else {
+                } else if(position==1) {
                     sortType = getString(R.string.base_uri_toprated);
                     headerText=getString(R.string.topHeader);
+                }else{
+                    sortType = getString(R.string.base_uri_favorites);
+                    headerText=getString(R.string.topFavorites);
                 }
+
                 TextView mainHeader=(TextView) getActivity().findViewById(R.id.mainHeader);
                 mainHeader.setText(headerText);
                 updateMovieThumbs(sortType);
@@ -206,7 +208,7 @@ public class MainActivityFragment extends Fragment {
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-        if (isConnected) {
+        if (isConnected || sortType==getString(R.string.base_uri_favorites)) {
 
             FetchMovieDatabase movieTask = new FetchMovieDatabase();
             movieTask.execute(sortType);
@@ -260,6 +262,29 @@ public class MainActivityFragment extends Fragment {
 
         }
 
+        private ArrayList<String[]> getFavorites()
+{
+
+            ArrayList<String[]> newThumbids = new ArrayList<>();
+
+
+            ContentResolver cr = getActivity().getContentResolver();
+            Cursor c = cr.query(MoviesContract.MovieEntry.CONTENT_URI, null,
+                    null, null, null);
+
+            if (c.moveToFirst()) {
+                do {
+                    String[] outputAttr = { c.getString(2),c.getString(3),c.getString(4),
+                            c.getString(6),c.getString(5),c.getString(1)};
+                    newThumbids.add(outputAttr);
+                } while (c.moveToNext());
+            }
+            c.close();
+            return newThumbids;
+
+
+        }
+
         @Override
         protected ArrayList<String[]> doInBackground(String... params) {
 
@@ -267,72 +292,81 @@ public class MainActivityFragment extends Fragment {
 
                 return null;
             }
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
 
-            String movieJsonStr = null;
+            if (params[0]==getString(R.string.base_uri_favorites)){
+                return getFavorites();
 
-
-            try {
-
-                final String BASE_URL = params[0];
-                final String API_KEY = "api_key";
-
-                Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(API_KEY, BuildConfig.MOVIES_API_KEY)
-                        .build();
+            }
+            else {
 
 
-                URL url = new URL(builtUri.toString());
+                HttpURLConnection urlConnection = null;
+                BufferedReader reader = null;
 
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
+                String movieJsonStr = null;
 
-                // Read the input stream into a String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // Nothing to do.
+
+                try {
+
+                    final String BASE_URL = params[0];
+                    final String API_KEY = "api_key";
+
+                    Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                            .appendQueryParameter(API_KEY, BuildConfig.MOVIES_API_KEY)
+                            .build();
+
+
+                    URL url = new URL(builtUri.toString());
+
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
+
+                    // Read the input stream into a String
+                    InputStream inputStream = urlConnection.getInputStream();
+                    StringBuffer buffer = new StringBuffer();
+                    if (inputStream == null) {
+                        // Nothing to do.
+                        return null;
+                    }
+                    reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        buffer.append(line + "\n");
+                    }
+
+                    if (buffer.length() == 0) {
+
+                        return null;
+                    }
+                    movieJsonStr = buffer.toString();
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Error ", e);
+
                     return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-
-                    return null;
-                }
-                movieJsonStr = buffer.toString();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (final IOException e) {
+                            Log.e(LOG_TAG, "Error closing stream", e);
+                        }
                     }
                 }
-            }
 
-            try {
-                return getMovieDataJson(movieJsonStr);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
+                try {
+                    return getMovieDataJson(movieJsonStr);
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, e.getMessage(), e);
+                    e.printStackTrace();
+                }
 
-            return null;
+                return null;
+            }
         }
 
 
@@ -389,33 +423,9 @@ public class MainActivityFragment extends Fragment {
 
             ImageView iv=(ImageView) convertView.findViewById(R.id.cardImagePoster);
 
-            final ImageView favIcon=(ImageView) convertView.findViewById(R.id.cardFavIcon);
+
             final String id=mThumbIds.get(position)[5];
-            favIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Do something
-                    String imageName=String.valueOf(favIcon.getTag());
-                    Log.v("Test",imageName);
 
-
-                    if (mFavorites.contains(id)) {
-                        Picasso.with(mContext).load(R.drawable.heart_blank).into(favIcon);
-                        mFavorites.remove(id);
-                    }
-                    else {
-                        Picasso.with(mContext).load(R.drawable.hearts).into(favIcon);
-                        mFavorites.add(id);
-                    }
-                }
-            });
-
-            if (mFavorites.contains(id)) {
-                Picasso.with(mContext).load(R.drawable.hearts).into(favIcon);
-            }
-            else {
-                Picasso.with(mContext).load(R.drawable.heart_blank).into(favIcon);
-            }
 
             TextView titleText=(TextView) convertView.findViewById(R.id.cardMovieTitle);
             titleText.setText(mThumbIds.get(position)[1].trim());
