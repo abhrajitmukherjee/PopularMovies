@@ -1,8 +1,6 @@
 package com.example.android.popularmovies;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,8 +12,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle("");
-
-
 
 
         setContentView(R.layout.activity_movie_details);
@@ -51,13 +47,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.movie_details_container,movFragment)
+                        .add(R.id.movie_details_container, movFragment)
                         .commit();
             }
         }
-
-
-
 
 
     }

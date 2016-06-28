@@ -1,112 +1,102 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<ScrollView
-    android:id="@+id/detail_scroll"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/detail_scroll"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        tools:context="com.example.android.popularmovies.MovieDetailsFragment">
-
-
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/headerLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
+            tools:context="com.example.android.popularmovies.MovieDetailsFragment">
 
+
+            <RelativeLayout
+                android:id="@+id/headerLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/videoHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:adjustViewBounds="true"
+                    android:background="@color/colorPrimary"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/playButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitStart" />
+
+
+            </RelativeLayout>
 
 
             <ImageView
-                android:id="@+id/videoHeader"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:id="@+id/imagePoster"
+                android:layout_width="150dp"
+                android:layout_height="210dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="200dp"
                 android:adjustViewBounds="true"
-                android:background="@color/colorPrimary"
-                android:scaleType="centerCrop" />
+                android:scaleType="fitStart" />
+
+
+            <TextView
+                android:id="@+id/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/headerLayout"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:layout_toRightOf="@id/imagePoster"
+                android:textColor="@android:color/black"
+                android:textSize="24sp" />
+
+
+            <TextView
+                android:id="@+id/textRelease"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textTitle"
+                android:layout_toRightOf="@id/imagePoster" />
+
+
+            <View
+                android:id="@+id/line_poster"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/imagePoster"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:background="#c0c0c0" />
+
+            <TextView
+                android:id="@+id/textVote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/line_poster"
+                android:layout_toRightOf="@id/imagePoster"
+                android:textSize="24sp" />
 
             <ImageView
-                android:id="@+id/playButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerInParent="true"
-                android:adjustViewBounds="true"
-                android:scaleType="fitStart"
- />
+                android:id="@+id/voteStar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_above="@id/line_poster"
+                android:layout_toRightOf="@id/textVote"
+                android:paddingBottom="2dp"
+                android:src="@drawable/ic_grade_black_24dp" />
 
-
-
-        </RelativeLayout>
-
-
-
-
-
-
-        <ImageView
-            android:id="@+id/imagePoster"
-            android:layout_width="150dp"
-            android:layout_height="210dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="200dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitStart" />
-
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/headerLayout"
-            android:layout_toRightOf="@id/imagePoster"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:textColor="@android:color/black"
-            android:textSize="24sp" />
-
-
-
-        <TextView
-            android:id="@+id/textRelease"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textTitle"
-            android:layout_toRightOf="@id/imagePoster"
-/>
-
-
-        <View
-            android:id="@+id/line_poster"
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/imagePoster"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:background="#c0c0c0" />
-
-        <TextView
-            android:id="@+id/textVote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/line_poster"
-            android:layout_toRightOf="@id/imagePoster"
-            android:textSize="24sp" />
-
-        <ImageView
-            android:id="@+id/voteStar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:paddingBottom="2dp"
-            android:layout_above="@id/line_poster"
-            android:layout_toRightOf="@id/textVote"
-            android:src="@drawable/ic_grade_black_24dp" />
-
-        <!--<ImageView-->
+            <!--<ImageView-->
             <!--android:id="@+id/cardFavIconDetail"-->
             <!--android:layout_width="45dp"-->
             <!--android:layout_height="45dp"-->
@@ -117,86 +107,86 @@
             <!--android:scaleType="fitStart"-->
             <!--android:src="@drawable/heart_blank" />-->
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/line_poster"
-            android:orientation="vertical"
-            android:id="@+id/overviewLayout"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
-
-
-            <TextView
-                android:id="@+id/textOverview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp" />
-
-            <View
-                android:id="@+id/line_video"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/textOverview"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:background="#c0c0c0" />
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerviewVideo"
+            <RelativeLayout
+                android:id="@+id/overviewLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/line_video" />
+                android:layout_height="match_parent"
+                android:layout_below="@id/line_poster"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
 
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerviewReviews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/recyclerviewVideo"
-                android:paddingTop="@dimen/activity_vertical_margin"/>
+                <TextView
+                    android:id="@+id/textOverview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp" />
+
+                <View
+                    android:id="@+id/line_video"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/textOverview"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:background="#c0c0c0" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerviewVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/line_video" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerviewReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/recyclerviewVideo"
+                    android:paddingTop="@dimen/activity_vertical_margin" />
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 
-
-    </RelativeLayout>
-
-</ScrollView>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="horizontal"
         app:layout_anchor="@id/overviewLayout"
-        app:layout_anchorGravity="bottom|right|end|"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp">
+        app:layout_anchorGravity="bottom|right|end|">
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:id="@+id/floatingButton"
-        android:src="@drawable/ic_share_white_24dp"
-        android:layout_marginRight="8dp"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:clickable="true"
+            android:src="@drawable/ic_share_white_24dp"
 
 
-        />
+            />
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:id="@+id/floatingFavorite"
-        android:src="@drawable/heart_blank"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/heart_blank"
 
-        />
+            />
 
     </LinearLayout>
 
-    </android.support.design.widget.CoordinatorLayout>
+</android.support.design.widget.CoordinatorLayout>
 
 
 

@@ -34,7 +34,6 @@
             android:orientation="horizontal">
 
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -71,14 +70,14 @@
 
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/cardFavIcon"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="30dp"-->
-                    <!--android:layout_marginRight="8dp"-->
-                    <!--android:layout_marginTop="8dp"-->
-                    <!--android:layout_weight="2"-->
-                    <!--android:scaleType="fitStart"-->
-                    <!--android:src="@drawable/blank" />-->
+                <!--android:id="@+id/cardFavIcon"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_marginRight="8dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:scaleType="fitStart"-->
+                <!--android:src="@drawable/blank" />-->
 
             </LinearLayout>
 

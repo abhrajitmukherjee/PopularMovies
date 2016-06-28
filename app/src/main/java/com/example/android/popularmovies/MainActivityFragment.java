@@ -49,15 +49,10 @@ public class MainActivityFragment extends Fragment {
     String sortType;
     private ImageAdapter mImageAdapter;
     private GridView gridview;
-    private int id;
 
     public MainActivityFragment() {
 
 
-    }
-
-    public interface Callback {
-        public void onItemSelected(ArrayList<String[]> mThumbIds, int position);
     }
 
     @Override
@@ -66,7 +61,7 @@ public class MainActivityFragment extends Fragment {
 
         mThumbIds = new ArrayList<>();
         //Initialized with dummy values to prevent on load freeze
-        String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "", "", "", "",""};
+        String[] arr = {"https://s5.postimg.org/b3evudzxz/blank.png", "", "", "", "", ""};
         mThumbIds.add(arr);
 
         if (savedInstanceState != null) {
@@ -80,7 +75,6 @@ public class MainActivityFragment extends Fragment {
         setHasOptionsMenu(true);
 
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -97,13 +91,13 @@ public class MainActivityFragment extends Fragment {
         int selection;
         if (sortType.equals(getString(R.string.base_uri_toprated))) {
             selection = 1;
+        } else if (sortType.equals(getString(R.string.base_uri_favorites))) {
+            selection = 2;
         } else {
             selection = 0;
         }
 
         spinner.setSelection(selection);
-
-
 
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -113,19 +107,21 @@ public class MainActivityFragment extends Fragment {
                 String headerText;
                 if (position == 0) {
                     sortType = getString(R.string.base_uri_popular);
-                    headerText=getString(R.string.popularHeader);
-                } else if(position==1) {
+                    headerText = getString(R.string.popularHeader);
+                } else if (position == 1) {
                     sortType = getString(R.string.base_uri_toprated);
-                    headerText=getString(R.string.topHeader);
-                }else{
+                    headerText = getString(R.string.topHeader);
+                } else {
                     sortType = getString(R.string.base_uri_favorites);
-                    headerText=getString(R.string.topFavorites);
+                    headerText = getString(R.string.topFavorites);
                 }
 
-                TextView mainHeader=(TextView) getActivity().findViewById(R.id.mainHeader);
+                TextView mainHeader = (TextView) getActivity().findViewById(R.id.mainHeader);
                 mainHeader.setText(headerText);
                 updateMovieThumbs(sortType);
-                gridview.setSelection(0);
+                if (gridview != null) {
+                    gridview.setSelection(0);
+                }
             }
 
             @Override
@@ -133,7 +129,6 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
-
 
 
         spinner.setPopupBackgroundResource(R.color.colorAccent);
@@ -145,25 +140,8 @@ public class MainActivityFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        gridview = (GridView) getActivity().findViewById(R.id.gridview);
-        mImageAdapter = new ImageAdapter(getActivity());
-        gridview.setAdapter(mImageAdapter);
-
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-
-                ((Callback)getActivity()).onItemSelected(mThumbIds,position);
-
-
-
-            }
-        });
-
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -176,8 +154,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        if (recallFlag) {
+        if (recallFlag || sortType == getString(R.string.base_uri_favorites)) {
             updateMovieThumbs(sortType);
         }
 
@@ -190,14 +167,12 @@ public class MainActivityFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
 
         return true;
     }
-
 
     private void updateMovieThumbs(String sortType) {
 
@@ -208,21 +183,29 @@ public class MainActivityFragment extends Fragment {
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
 
-        if (isConnected || sortType==getString(R.string.base_uri_favorites)) {
+        if (isConnected || sortType == getString(R.string.base_uri_favorites)) {
 
             FetchMovieDatabase movieTask = new FetchMovieDatabase();
             movieTask.execute(sortType);
 
         } else {
-            gridview.setAdapter(null);
-            Toast.makeText(getActivity(), "No Internet Connection",
-                    Toast.LENGTH_SHORT).show();
+            if (gridview != null) {
+                gridview.setAdapter(null);
+                Toast.makeText(getActivity(), "No Internet Connection",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+
 
         }
 
 
     }
 
+
+    public interface Callback {
+        public void onItemSelected(ArrayList<String[]> mThumbIds, int position);
+    }
 
     public class FetchMovieDatabase extends AsyncTask<String, Void, ArrayList<String[]>> {
 
@@ -238,7 +221,7 @@ public class MainActivityFragment extends Fragment {
             final String OVERVIEW = "overview";
             final String VOTES = "vote_average";
             final String RELEASE = "release_date";
-            final String ID="id";
+            final String ID = "id";
             ArrayList<String[]> newThumbids = new ArrayList<String[]>();
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
@@ -252,7 +235,7 @@ public class MainActivityFragment extends Fragment {
                 String voteAvg = results.getString(VOTES);
                 String releaseDate = results.getString(RELEASE);
                 String id = results.getString(ID);
-                String[] outputAttr = {posterPath, title, overview, voteAvg, releaseDate,id};
+                String[] outputAttr = {posterPath, title, overview, voteAvg, releaseDate, id};
 
                 newThumbids.add(outputAttr);
 
@@ -262,8 +245,7 @@ public class MainActivityFragment extends Fragment {
 
         }
 
-        private ArrayList<String[]> getFavorites()
-{
+        private ArrayList<String[]> getFavorites() {
 
             ArrayList<String[]> newThumbids = new ArrayList<>();
 
@@ -274,8 +256,8 @@ public class MainActivityFragment extends Fragment {
 
             if (c.moveToFirst()) {
                 do {
-                    String[] outputAttr = { c.getString(2),c.getString(3),c.getString(4),
-                            c.getString(6),c.getString(5),c.getString(1)};
+                    String[] outputAttr = {c.getString(2), c.getString(3), c.getString(4),
+                            c.getString(6), c.getString(5), c.getString(1)};
                     newThumbids.add(outputAttr);
                 } while (c.moveToNext());
             }
@@ -293,11 +275,10 @@ public class MainActivityFragment extends Fragment {
                 return null;
             }
 
-            if (params[0]==getString(R.string.base_uri_favorites)){
+            if (params[0] == getString(R.string.base_uri_favorites)) {
                 return getFavorites();
 
-            }
-            else {
+            } else {
 
 
                 HttpURLConnection urlConnection = null;
@@ -378,8 +359,21 @@ public class MainActivityFragment extends Fragment {
                 }
 
                 mThumbIds = (ArrayList<String[]>) result.clone();
-                if (gridview.getAdapter() == null) {
+                if (gridview == null) {
+                    gridview = (GridView) getActivity().findViewById(R.id.gridview);
+                    mImageAdapter = new ImageAdapter(getActivity());
                     gridview.setAdapter(mImageAdapter);
+
+
+                    gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        public void onItemClick(AdapterView<?> parent, View v,
+                                                int position, long id) {
+
+                            ((Callback) getActivity()).onItemSelected(mThumbIds, position);
+
+
+                        }
+                    });
                 }
                 mImageAdapter.notifyDataSetChanged();
 
@@ -413,30 +407,28 @@ public class MainActivityFragment extends Fragment {
 
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (inflater==null)
-                inflater= (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (inflater == null)
+                inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.card_layout, null);
 
 
-
-            ImageView iv=(ImageView) convertView.findViewById(R.id.cardImagePoster);
-
-
-            final String id=mThumbIds.get(position)[5];
+            ImageView iv = (ImageView) convertView.findViewById(R.id.cardImagePoster);
 
 
-            TextView titleText=(TextView) convertView.findViewById(R.id.cardMovieTitle);
+            final String id = mThumbIds.get(position)[5];
+
+
+            TextView titleText = (TextView) convertView.findViewById(R.id.cardMovieTitle);
             titleText.setText(mThumbIds.get(position)[1].trim());
 
-            TextView releaseDate=(TextView) convertView.findViewById(R.id.cardMovieDate);
+            TextView releaseDate = (TextView) convertView.findViewById(R.id.cardMovieDate);
             releaseDate.setText(mThumbIds.get(position)[4].trim());
 
-            TextView voteAvg=(TextView) convertView.findViewById(R.id.cardMovieRating);
+            TextView voteAvg = (TextView) convertView.findViewById(R.id.cardMovieRating);
 
             voteAvg.setText(mThumbIds.get(position)[3].trim());
-
 
 
             Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(iv);

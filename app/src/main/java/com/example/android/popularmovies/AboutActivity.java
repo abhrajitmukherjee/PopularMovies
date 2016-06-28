@@ -13,7 +13,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        TextView textView =(TextView)findViewById(R.id.textTitle1);
+        TextView textView = (TextView) findViewById(R.id.textTitle1);
         textView.setClickable(true);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 

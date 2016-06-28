@@ -8,7 +8,7 @@ import com.example.android.popularmovies.BuildConfig;
 
 public class MoviesContract {
 
-    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID+".provider";
+    public static final String CONTENT_AUTHORITY = BuildConfig.APPLICATION_ID + ".provider";
     public static final String PATH_MOVIE = "movies";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -29,7 +29,6 @@ public class MoviesContract {
         public static final String RELEASE_DATE = "releaseDate";
         public static final String RATING = "rating";
         public static final String IS_FAVORITE = "isFavorite";
-
 
 
     }

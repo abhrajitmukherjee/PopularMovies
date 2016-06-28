@@ -109,7 +109,6 @@ public class MovieDetailsFragment extends Fragment {
             }
 
 
-
             RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.headerLayout);
             rl.setOnClickListener(new View.OnClickListener() {
 
@@ -152,7 +151,7 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final FloatingActionButton floatFav=(FloatingActionButton)
+        final FloatingActionButton floatFav = (FloatingActionButton)
                 getActivity().findViewById(R.id.floatingFavorite);
         ContentResolver cr = getActivity().getContentResolver();
         ContentValues cValues = new ContentValues();
@@ -162,7 +161,7 @@ public class MovieDetailsFragment extends Fragment {
         String dbMovieId = "";
         if (c.moveToFirst()) {
 
-                dbMovieId = c.getString(1);
+            dbMovieId = c.getString(1);
 
         }
         if (dbMovieId.equals(id)) {
@@ -173,7 +172,7 @@ public class MovieDetailsFragment extends Fragment {
         }
 
 
- final FloatingActionButton floatingFav=(FloatingActionButton) getActivity().
+        final FloatingActionButton floatingFav = (FloatingActionButton) getActivity().
                 findViewById(R.id.floatingFavorite);
 
         floatingFav.setOnClickListener
@@ -214,8 +213,6 @@ public class MovieDetailsFragment extends Fragment {
                  }
 
                 );
-
-
 
 
     }

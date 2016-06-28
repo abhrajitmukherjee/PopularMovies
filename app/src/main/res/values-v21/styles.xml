@@ -17,6 +17,7 @@
         <item name="windowActionBarOverlay">true</item>
         <item name="actionBarTheme">@style/MyApp.ActionBarTheme</item>
     </style>
+
     <style name="MyApp.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- THIS is where you can color the arrow! -->
         <item name="colorControlNormal">@android:color/white</item>

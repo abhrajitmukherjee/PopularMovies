@@ -27,7 +27,7 @@ public class MovieDetailsWebService {
 
     MovieDetailsWebService(FragmentActivity inpContext, MovieDetailsFragment fg) {
         mParentActivity = inpContext;
-        mFragment=fg;
+        mFragment = fg;
     }
 
     public void getReviews(String id) {
@@ -46,9 +46,8 @@ public class MovieDetailsWebService {
                 if (response.isSuccessful()) {
                     RepoReviews rr = response.body();
                     if (rr.results.size() > 0)
-                        mFragment.reviewList=new ArrayList<>(rr.results);
-                        mFragment.setupRecyclerViewReviews(mFragment.rvReviews);
-
+                        mFragment.reviewList = new ArrayList<>(rr.results);
+                    mFragment.setupRecyclerViewReviews(mFragment.rvReviews);
 
 
                     //
@@ -73,7 +72,7 @@ public class MovieDetailsWebService {
 
     }
 
-    public void getVideos(String id){
+    public void getVideos(String id) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/")
@@ -88,26 +87,25 @@ public class MovieDetailsWebService {
 
                 if (response.isSuccessful()) {
                     MovieVideos rv = response.body();
-                    if (rv.results.size() > 0){
+                    if (rv.results.size() > 0) {
 
 
-                       String utube="http://img.youtube.com/vi/"+rv.results.get(0).key+"/0.jpg";
+                        String utube = "http://img.youtube.com/vi/" + rv.results.get(0).key + "/0.jpg";
                         mFragment.utube.add(rv.results.get(0).key);
-                        mFragment.videoList=new ArrayList<>(rv.results);
+                        mFragment.videoList = new ArrayList<>(rv.results);
                         mFragment.setupRecyclerViewVideos(mFragment.rvVideos);
 
-                        ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
+                        ImageView iv = (ImageView) mParentActivity.findViewById(R.id.videoHeader);
                         Picasso.with(mParentActivity).load(utube).into(iv);
 
-                        ImageView iv1=(ImageView) mParentActivity.findViewById(R.id.playButton);
+                        ImageView iv1 = (ImageView) mParentActivity.findViewById(R.id.playButton);
                         Picasso.with(mParentActivity).load(R.drawable.play_button).into(iv1);
 
-                    }else
-                    {
-                        ImageView iv=(ImageView) mParentActivity.findViewById(R.id.videoHeader);
+                    } else {
+                        ImageView iv = (ImageView) mParentActivity.findViewById(R.id.videoHeader);
                         Picasso.with(mParentActivity).load(mFragment.posterPath).into(iv);
 
-                        ImageView iv1=(ImageView) mParentActivity.findViewById(R.id.playButton);
+                        ImageView iv1 = (ImageView) mParentActivity.findViewById(R.id.playButton);
                         Picasso.with(mParentActivity).load("http://img.youtube.com/vi/0.jpg").into(iv1);
                     }
 
@@ -131,7 +129,6 @@ public class MovieDetailsWebService {
                 Log.d("Error----", t.getMessage());
             }
         });
-
 
 
     }

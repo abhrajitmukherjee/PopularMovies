@@ -14,9 +14,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
 
     @Override
-    public void onItemSelected(ArrayList<String[]> mThumbIds,int position){
+    public void onItemSelected(ArrayList<String[]> mThumbIds, int position) {
 
-        if (mTwoPane){
+        if (mTwoPane) {
 
             Bundle args = new Bundle();
             args.putString(getString(R.string.intent_poster_path), mThumbIds.get(position)[0]);
@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             args.putString(getString(R.string.intent_movie_id), mThumbIds.get(position)[5]);
 
 
-
             MovieDetailsFragment movFragment = new MovieDetailsFragment();
             movFragment.setArguments(args);
 
@@ -36,9 +35,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     .replace(R.id.fragment_detail_container, movFragment)
                     .commit();
 
-        }
-        else
-        {
+        } else {
 
             Intent intent = new Intent(this, MovieDetailsActivity.class)
                     .putExtra(getString(R.string.intent_poster_path), mThumbIds.get(position)[0])
@@ -59,11 +56,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (findViewById(R.id.fragment_detail_container)!=null){
-            mTwoPane=true;
-        }
-        else{
-            mTwoPane=false;
+        if (findViewById(R.id.fragment_detail_container) != null) {
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
         }
 
 
@@ -93,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

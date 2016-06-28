@@ -10,10 +10,10 @@
         android:id="@+id/textTitle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="34sp"
-        android:textStyle="bold"
         android:layout_centerInParent="true"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

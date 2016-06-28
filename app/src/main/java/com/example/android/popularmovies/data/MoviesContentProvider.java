@@ -10,11 +10,10 @@ import android.support.annotation.Nullable;
 
 public class MoviesContentProvider extends ContentProvider {
 
+    final static int MOVIES = 100;
+    final static int MOVIES_WITH_ID = 101;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDbHelper mOpenHelper;
-
-    final static int MOVIES=100;
-    final static int MOVIES_WITH_ID=101;
 
     static UriMatcher buildUriMatcher() {
 
@@ -23,7 +22,7 @@ public class MoviesContentProvider extends ContentProvider {
 
 
         matcher.addURI(authority, MoviesContract.PATH_MOVIE, MOVIES);
-        matcher.addURI(authority, MoviesContract.PATH_MOVIE+ "/#", MOVIES_WITH_ID);
+        matcher.addURI(authority, MoviesContract.PATH_MOVIE + "/#", MOVIES_WITH_ID);
 
         return matcher;
     }
@@ -47,27 +46,25 @@ public class MoviesContentProvider extends ContentProvider {
     }
 
 
-
-
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         final int match = sUriMatcher.match(uri);
-        SQLiteDatabase db=mOpenHelper.getReadableDatabase();
-        cursor=null;
+        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        cursor = null;
         switch (match) {
             case MOVIES:
-                cursor = db.query(MoviesContract.MovieEntry.TABLE_NAME ,null,
+                cursor = db.query(MoviesContract.MovieEntry.TABLE_NAME, null,
                         selection, selectionArgs, null, null, sortOrder);
                 break;
 
 
             case MOVIES_WITH_ID:
-                cursor=null;
+                cursor = null;
                 break;
             default:
-                cursor=null;
+                cursor = null;
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -79,17 +76,17 @@ public class MoviesContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor;
         final int match = sUriMatcher.match(uri);
-        SQLiteDatabase db=mOpenHelper.getWritableDatabase();
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         int id;
         switch (match) {
             case MOVIES:
-                id = db.delete(MoviesContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
+                id = db.delete(MoviesContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case MOVIES_WITH_ID:
-                id=0;
+                id = 0;
                 break;
             default:
-                id=-1;
+                id = -1;
         }
         return id;
     }
@@ -105,11 +102,11 @@ public class MoviesContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         Cursor cursor;
         final int match = sUriMatcher.match(uri);
-        SQLiteDatabase db=mOpenHelper.getWritableDatabase();
-        cursor=null;
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        cursor = null;
         switch (match) {
             case MOVIES:
-                long id = db.insert(MoviesContract.MovieEntry.TABLE_NAME,null,values);
+                long id = db.insert(MoviesContract.MovieEntry.TABLE_NAME, null, values);
                 break;
             case MOVIES_WITH_ID:
                 break;

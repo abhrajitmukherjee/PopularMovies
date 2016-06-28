@@ -26,8 +26,7 @@
             android:name=".MovieDetailsActivity"
             android:label="@string/title_activity_movie_details"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppThemeNoAction"
->
+            android:theme="@style/AppThemeNoAction">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.popularmovies.MainActivity" />
@@ -41,9 +40,9 @@
 
         </activity>
 
-        <provider android:name="com.example.android.popularmovies.data.MoviesContentProvider"
-            android:authorities="com.example.android.popularmovies.provider">
-        </provider>
+        <provider
+            android:name="com.example.android.popularmovies.data.MoviesContentProvider"
+            android:authorities="com.example.android.popularmovies.provider"></provider>
     </application>
 
 </manifest>
