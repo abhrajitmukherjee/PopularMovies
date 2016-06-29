@@ -1,7 +1,7 @@
 # Popular Movies App
 
 Popular Movies is an android app to display trending and top rated movies in real time. It also stores favorite movies as marked by the user. The favorites section works offline based on stored data in SQLite DB. The app uses the https://www.themoviedb.org/ API.
-Lot of frequently used concepts, features and libraries. Listing few below:-
+Many frequently used concepts, features and libraries have been used in this app. Listing few below:-
 
  - Picasso (For image caching and processing)
  - Retrofit (A type-safe HTTP client) with GSON (Json parser by Google)
