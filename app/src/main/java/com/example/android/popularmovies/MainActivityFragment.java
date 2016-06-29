@@ -382,6 +382,14 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    static class ViewHolder{
+
+        ImageView iv;
+        TextView titleText;
+        TextView releaseDate;
+        TextView voteAvg;
+
+    }
 
     public class ImageAdapter extends BaseAdapter {
         private Context mContext;
@@ -397,6 +405,7 @@ public class MainActivityFragment extends Fragment {
 
         }
 
+
         public Object getItem(int position) {
             return null;
         }
@@ -407,31 +416,26 @@ public class MainActivityFragment extends Fragment {
 
 
         public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder;
             if (inflater == null)
                 inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            if (convertView == null)
+            if (convertView == null){
                 convertView = inflater.inflate(R.layout.card_layout, null);
+                ViewHolder holder=new ViewHolder();
+                holder.titleText = (TextView) convertView.findViewById(R.id.cardMovieTitle);
+                holder.releaseDate = (TextView) convertView.findViewById(R.id.cardMovieDate);
+                holder.voteAvg = (TextView) convertView.findViewById(R.id.cardMovieRating);
+                holder.iv = (ImageView) convertView.findViewById(R.id.cardImagePoster);
+                convertView.setTag(holder);
+            }
 
+            viewHolder = (ViewHolder) convertView.getTag();
 
-            ImageView iv = (ImageView) convertView.findViewById(R.id.cardImagePoster);
-
-
-            final String id = mThumbIds.get(position)[5];
-
-
-            TextView titleText = (TextView) convertView.findViewById(R.id.cardMovieTitle);
-            titleText.setText(mThumbIds.get(position)[1].trim());
-
-            TextView releaseDate = (TextView) convertView.findViewById(R.id.cardMovieDate);
-            releaseDate.setText(mThumbIds.get(position)[4].trim());
-
-            TextView voteAvg = (TextView) convertView.findViewById(R.id.cardMovieRating);
-
-            voteAvg.setText(mThumbIds.get(position)[3].trim());
-
-
-            Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(iv);
+            viewHolder.titleText.setText(mThumbIds.get(position)[1].trim());
+            viewHolder.releaseDate.setText(mThumbIds.get(position)[4].trim());
+            viewHolder.voteAvg.setText(mThumbIds.get(position)[3].trim());
+            Picasso.with(mContext).load(mThumbIds.get(position)[0]).into(viewHolder.iv);
             return convertView;
         }
 
