@@ -19,11 +19,11 @@ Many frequently used concepts, features and libraries have been used in this app
 
 Phone Screenshot
 ----------------
-![Main Screen Showing Trending Movies](https://s5.postimg.org/qv5talp2v/Movie_Main_Phone1.png)
+![Main Screen Showing Trending Movies](https://i.postimg.cc/g2P9VFHh/Movie-Main-Phone1.png)
 
-![enter image description here](https://s5.postimg.org/kewukigjb/Movie_Details_phone1.png)
+![enter image description here](https://i.postimg.cc/bwfScrpB/Movie-Details-phone1.png)
 
-![enter image description here](https://s5.postimg.org/7c1818qbb/Movie_Details_phone2.png)
+![enter image description here](https://i.postimg.cc/NjvDJQVg/Movie-Details-phone2.png)
 
 
 ----------
@@ -31,6 +31,6 @@ Phone Screenshot
 Tablet Screenshot
 -----------------
 
-![enter image description here](https://s5.postimg.org/7rchu9c8n/Movie_Table1.png)
+![enter image description here](https://i.postimg.cc/P5kxP7L3/Movie-Table1.png)
 
-![enter image description here](https://s5.postimg.org/gnn9y72uv/Movie_Tablet2.png)
+![enter image description here](https://i.postimg.cc/3xHXYn37/Movie-Tablet2.png)
